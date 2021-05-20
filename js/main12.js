@@ -80,7 +80,7 @@ function Init(){
 }
 
 function nextStory(){
-    document.location.href="ch01_12.html";
+    document.location.href="ch01_11_2.html";
 
     // choose = null;
     // mouse = false;
@@ -282,13 +282,13 @@ function mouseRead(){
                             if(leftchoice.position().left + distanceX / cspeed < -leftchoice.width() / 2){
                                 // leftchoice.offset({left:pos.left+distanceX/cspeed});
                                 // leftchoice.fadeOut();
-                                gameOver();
+                                nextStory();
                             }
                         }
                         if(distanceX > 0){
                             leftchoice.offset({left:pos.left + distanceX / cspeed});
                             if(leftchoice.position().left + distanceX / cspeed > leftchoice.width() / 2){
-                                gameOver();
+                                nextStory();
                             }
                         }
                         startX = endX;
@@ -548,7 +548,7 @@ function touchRead(){
                             if(leftchoice.position().left + distanceX / cspeed < -leftchoice.width() / 2){
                                 // leftchoice.offset({left:pos.left+distanceX/cspeed});
                                 // leftchoice.fadeOut();
-                                gameOver();
+                                nextStory();
                             }
                         }
                         if(distanceX > 0){
@@ -556,7 +556,7 @@ function touchRead(){
                             //     leftchoice.offset({left:pos.left+distanceX/cspeed});
                             leftchoice.offset({left:pos.left + distanceX / cspeed});
                             if(leftchoice.position().left + distanceX / cspeed > leftchoice.width() / 2){
-                                gameOver();
+                                nextStory();
                             }
                         }
                         startX = endX;
