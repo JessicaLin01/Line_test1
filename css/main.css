@@ -1,0 +1,114 @@
+body{
+    margin: 0%;
+}
+.comics{
+    display: block;
+}
+.over{
+    display: none;
+}
+.correct{
+    display: none;
+}
+.wrong{
+    display: none;
+}
+
+.comics{
+    max-height: auto;
+    max-width: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.comics::-webkit-scrollbar {
+    display: none;
+}
+
+.over{
+    max-height: auto;
+    max-width: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.over::-webkit-scrollbar {
+    display: none;
+}
+
+.content{
+    max-height: auto;
+    max-width: 100%;
+    position: absolute;
+    /* top: 0;
+    bottom: 0; */
+    left: 0;
+    right: 0;
+    margin: auto;
+    z-index: 0;
+}
+
+.choice{
+    max-width: 100%;
+    z-index: 2;
+}
+
+.correct{
+    position: absolute;
+    /* margin-left: 1%; */
+    bottom: 0;
+}
+
+.wrong{
+    position: absolute;
+    bottom: 23%;
+    margin-left: 52%;
+}
+
+.flex-dot{
+    max-height: 100%;
+    max-width: auto;
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 35px;
+    bottom: 0%;
+    margin: auto;
+    z-index: 0;
+}
+
+.next{
+    width: 30px;
+    height: 30px;
+    /* margin-left: 5%;
+    margin-right: 5%; */
+    position: absolute;
+}
+
+#dot1{
+    margin-left: 50px;
+}
+#dot2{
+    margin-left: 110px;
+}
+#dot3{
+    margin-left: 170px;
+}
+#dot4{
+    margin-left: 230px;
+}
+#dot5{
+    margin-left: 290px;
+}
