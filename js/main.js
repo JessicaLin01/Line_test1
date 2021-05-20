@@ -168,19 +168,19 @@ function mouseRead(){
                             if(dt == 1){
                                 dot1.style.display = 'block';
                             }
-                            if(dt == 5){
+                            if(dt == 3){
                                 dot2.style.display = 'block';
                             }
-                            if(dt == 10){
+                            if(dt == 5){
                                 dot3.style.display = 'block';
                             }
-                            if(dt == 15){
+                            if(dt == 7){
                                 dot4.style.display = 'block';
                             }
-                            if(dt == 20){
+                            if(dt == 9){
                                 dot5.style.display = 'block';
                             }
-                            if(dt == 21){
+                            if(dt == 10){
                                 Init();
                             }
                             
@@ -372,19 +372,19 @@ function touchRead(){
                             if(dt == 1){
                                 dot1.style.display = 'block';
                             }
-                            if(dt == 5){
+                            if(dt == 3){
                                 dot2.style.display = 'block';
                             }
-                            if(dt == 10){
+                            if(dt == 5){
                                 dot3.style.display = 'block';
                             }
-                            if(dt == 15){
+                            if(dt == 7){
                                 dot4.style.display = 'block';
                             }
-                            if(dt == 20){
+                            if(dt == 9){
                                 dot5.style.display = 'block';
                             }
-                            if(dt == 21){
+                            if(dt == 10){
                                 Init();
                             }
                         }
