@@ -4,6 +4,7 @@ var content = $(".content");
 var choice = $(".choice");
 var dot = $(".flex-dot");
 
+var speedplus = 3;
 var dt = 0;
 var isPhone = detectmob();
 var choose = null, mouse = false, speed = 1500, cspeed = 1;
@@ -125,7 +126,7 @@ function mouseRead(){
                 if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
                     if(disranceY < 0){
                         if(main.position().top + disranceY > (-main.height() + $(window).height())){
-                            main.offset({top:pos.top + disranceY});
+                            main.offset({top:pos.top + disranceY-speedplus});
                         }
                         if(main.position().top + disranceY < (-main.height() + $(window).height())){
                             $(".correct").fadeIn();
@@ -138,7 +139,7 @@ function mouseRead(){
                     }
                     else if(disranceY > 0){
                         if(main.position().top + disranceY < 0){
-                            main.offset({top:pos.top + disranceY});
+                            main.offset({top:pos.top + disranceY+speedplus});
                         }
                         if(main.position().top + disranceY < 0){
                             $(".correct").fadeOut();
@@ -158,7 +159,7 @@ function mouseRead(){
                 var disranceY = (endY - startY);
                 if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
                     if(disranceY < 0){
-                        end.offset({top:pos.top + disranceY});
+                        end.offset({top:pos.top + disranceY-speedplus});
                         if(end.position().top + disranceY < (-end.height() + $(window).height())){
                             var dot = $(window).height()/25;
                             
@@ -189,7 +190,7 @@ function mouseRead(){
                     }
                     else if(disranceY > 0){
                         if(end.position().top + disranceY < 0){
-                            end.offset({top:pos.top + disranceY});
+                            end.offset({top:pos.top + disranceY+speedplus});
                         }
                     }
                     startY = endY;
@@ -335,7 +336,7 @@ function touchRead(){
                 if(startY != Math.abs(disranceY)){
                     if(disranceY < 0){
                         if(main.position().top + disranceY > (-main.height() + $(window).height())){
-                            main.offset({top:pos.top + disranceY});
+                            main.offset({top:pos.top + disranceY-speedplus});
                         }
                         if(main.position().top + disranceY < (-main.height() + $(window).height())){
                             $(".correct").fadeIn();
@@ -348,7 +349,7 @@ function touchRead(){
                     }
                     else if(disranceY > 0){
                         if(main.position().top + disranceY < 0){
-                            main.offset({top:pos.top + disranceY});
+                            main.offset({top:pos.top + disranceY+speedplus});
                         }
                         if(main.position().top + disranceY < 0){
                             $(".correct").fadeOut();
@@ -368,7 +369,7 @@ function touchRead(){
                 var disranceY = (endY - startY);
                 if(startY != Math.abs(disranceY)){
                     if(disranceY < 0){
-                        end.offset({top:pos.top + disranceY});
+                        end.offset({top:pos.top + disranceY-speedplus});
                         if(end.position().top + disranceY < (-end.height() + $(window).height()) - $(window).height()/5){
                             console.log(dt);
                             dt++;
@@ -394,7 +395,7 @@ function touchRead(){
                     }
                     else if(disranceY > 0){
                         if(end.position().top + disranceY < 0){
-                            end.offset({top:pos.top + disranceY});
+                            end.offset({top:pos.top + disranceY+speedplus});
                         }
                     }
                     startY = endY;

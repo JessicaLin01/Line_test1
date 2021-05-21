@@ -3,6 +3,8 @@ var error = $(".over");
 var content = $(".content");
 var dot = $(".flex-dot");
 var dt = 0;
+var speedplus = 3;
+
 var one = document.getElementById('dot1');
 var two = document.getElementById('dot2');
 var three = document.getElementById('dot3');
@@ -127,7 +129,7 @@ function mouseRead(){
                 if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
                     if(disranceY < 0){
                         if(main.position().top + disranceY > (-main.height() + $(window).height())){
-                            main.offset({top:pos.top + disranceY});
+                            main.offset({top:pos.top + disranceY-speedplus});
                         }
                         if(main.position().top + disranceY < (-main.height() + $(window).height())){
                             $(".correct").fadeIn();
@@ -140,7 +142,7 @@ function mouseRead(){
                     }
                     else if(disranceY > 0){
                         if(main.position().top + disranceY < 0){
-                            main.offset({top:pos.top + disranceY});
+                            main.offset({top:pos.top + disranceY+speedplus});
                         }
                         if(main.position().top + disranceY < 0){
                             $(".correct").fadeOut();
@@ -309,7 +311,7 @@ function touchRead(){
                 if(startY != Math.abs(disranceY)){
                     if(disranceY < 0){
                         if(main.position().top + disranceY > (-main.height() + $(window).height())){
-                            main.offset({top:pos.top + disranceY});
+                            main.offset({top:pos.top + disranceY-speedplus});
                         }
                         if(main.position().top + disranceY < (-main.height() + $(window).height())){
                             $(".correct").fadeIn();
@@ -322,7 +324,7 @@ function touchRead(){
                     }
                     else if(disranceY > 0){
                         if(main.position().top + disranceY < 0){
-                            main.offset({top:pos.top + disranceY});
+                            main.offset({top:pos.top + disranceY+speedplus});
                         }
                         if(main.position().top + disranceY < 0){
                             $(".correct").fadeOut();

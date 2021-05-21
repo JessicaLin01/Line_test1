@@ -3,6 +3,8 @@ var error = $(".over");
 var content = $(".content");
 var dot = $(".flex-dot");
 var dt = 0;
+var speedplus = 3;
+
 var one = document.getElementById('dot1');
 var two = document.getElementById('dot2');
 var three = document.getElementById('dot3');
@@ -126,7 +128,7 @@ function mouseRead(){
                 var disranceY = (endY - startY);
                 if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
                     if(disranceY < 0){
-                        main.offset({top:pos.top + disranceY});
+                        main.offset({top:pos.top + disranceY-speedplus});
                         if(main.position().top + disranceY < (-main.height() + $(window).height())){
                             var dot = $(window).height()/25;
                             
@@ -157,7 +159,7 @@ function mouseRead(){
                     }
                     else if(disranceY > 0){
                         if(main.position().top + disranceY < 0){
-                            main.offset({top:pos.top + disranceY});
+                            main.offset({top:pos.top + disranceY+speedplus});
                         }
                     }
                     startY = endY;
@@ -324,7 +326,7 @@ function touchRead(){
                         if(disranceY < -20){
                             main.offset({top:pos.top + disranceY-20});
                         }
-                        main.offset({top:pos.top + disranceY});
+                        main.offset({top:pos.top + disranceY-speedplus});
                         if(main.position().top + disranceY < (-main.height() + $(window).height()) - $(window).height()/5){
                             console.log(dt);
                             dt++;
@@ -350,7 +352,7 @@ function touchRead(){
                     }
                     else if(disranceY > 0){
                         if(main.position().top + disranceY < 0){
-                            main.offset({top:pos.top + disranceY});
+                            main.offset({top:pos.top + disranceY+speedplus});
                         }
                     }
                     startY = endY;
