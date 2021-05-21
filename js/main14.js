@@ -85,7 +85,7 @@ function Init(){
 
 function nextStory(){
 
-    document.location.href="ch01_14.html";
+    document.location.href="ch01_15.html";
     // choose = null;
     // mouse = false;
     // startX = startY = endX = endY = 0;

@@ -85,7 +85,7 @@ function Init(){
 
 function nextStory(){
 
-    document.location.href="ch01_15.html";
+    // document.location.href="ch01_15.html";
     // choose = null;
     // mouse = false;
     // startX = startY = endX = endY = 0;
@@ -126,38 +126,25 @@ function mouseRead(){
                 var disranceY = (endY - startY);
                 if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
                     if(disranceY < 0){
-                        main.offset({top:pos.top + disranceY-10});
-                        if(main.position().top + disranceY < (-main.height() + $(window).height())){
-                            var dot = $(window).height()/25;
-                            
+                        if(main.position().top + disranceY > (-main.height() + $(window).height())){
+                            main.offset({top:pos.top + disranceY-10});
                         }
-                        if(main.position().top + disranceY < (-main.height() + $(window).height()) - $(window).height()/5){
-                            console.log(dt);
-                            dt++;
-                            if(dt == 1){
-                                dot1.style.display = 'block';
-                            }
-                            if(dt == 3){
-                                dot2.style.display = 'block';
-                            }
-                            if(dt == 5){
-                                dot3.style.display = 'block';
-                            }
-                            if(dt == 7){
-                                dot4.style.display = 'block';
-                            }
-                            if(dt == 9){
-                                dot5.style.display = 'block';
-                            }
-                            if(dt == 10){
-                                nextStory();
-                            }
-                            
+                        if(main.position().top + disranceY < (-main.height() + $(window).height())){
+                            $(".correct").fadeIn();
+                            // $(".wrong").fadeIn();
+                        }
+                        else{
+                            $(".correct").fadeOut();
+                            // $(".wrong").fadeOut();
                         }
                     }
                     else if(disranceY > 0){
                         if(main.position().top + disranceY < 0){
                             main.offset({top:pos.top + disranceY+10});
+                        }
+                        if(main.position().top + disranceY < 0){
+                            $(".correct").fadeOut();
+                            // $(".wrong").fadeOut();
                         }
                     }
                     startY = endY;
@@ -321,36 +308,25 @@ function touchRead(){
                 var disranceY = (endY - startY);
                 if(startY != Math.abs(disranceY)){
                     if(disranceY < 0){
-                        if(disranceY < -20){
-                            main.offset({top:pos.top + disranceY-20});
+                        if(main.position().top + disranceY > (-main.height() + $(window).height())){
+                            main.offset({top:pos.top + disranceY-10});
                         }
-                        main.offset({top:pos.top + disranceY-10});
-                        if(main.position().top + disranceY < (-main.height() + $(window).height()) - $(window).height()/5){
-                            console.log(dt);
-                            dt++;
-                            if(dt == 1){
-                                dot1.style.display = 'block';
-                            }
-                            if(dt == 3){
-                                dot2.style.display = 'block';
-                            }
-                            if(dt == 5){
-                                dot3.style.display = 'block';
-                            }
-                            if(dt == 7){
-                                dot4.style.display = 'block';
-                            }
-                            if(dt == 9){
-                                dot5.style.display = 'block';
-                            }
-                            if(dt == 10){
-                                nextStory();
-                            }
+                        if(main.position().top + disranceY < (-main.height() + $(window).height())){
+                            $(".correct").fadeIn();
+                            // $(".wrong").fadeIn();
+                        }
+                        else{
+                            $(".correct").fadeOut();
+                            // $(".wrong").fadeOut();
                         }
                     }
                     else if(disranceY > 0){
                         if(main.position().top + disranceY < 0){
                             main.offset({top:pos.top + disranceY+10});
+                        }
+                        if(main.position().top + disranceY < 0){
+                            $(".correct").fadeOut();
+                            // $(".wrong").fadeOut();
                         }
                     }
                     startY = endY;

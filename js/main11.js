@@ -1,31 +1,33 @@
 var comic = $(".comics");
 var error = $(".over");
+var unif = $(".uniformget");
 var content = $(".content");
+var choice = $(".choice");
 var dot = $(".flex-dot");
+
 var dt = 0;
+var isPhone = detectmob();
+var choose = null, mouse = false, speed = 1500, cspeed = 1;
+var startX = startY = endX = endY = 0;
+var main = $("#main");
+var end = $("#end");
+var uniformget = $("#uniform");
+var leftchoice = $("#correct");
+// var rightchoice = $("#wrong");
+var story = document.querySelector("#main");
+var over = document.querySelector("#end");
+var uniformgetadd = document.querySelector("#uniform");
+var correct = document.querySelector(".correct");
+// var wrong = document.querySelector(".wrong");
 var one = document.getElementById('dot1');
 var two = document.getElementById('dot2');
 var three = document.getElementById('dot3');
 var four = document.getElementById('dot4');
 var five = document.getElementById('dot5');
 
-var choice = $(".choice");
-var isPhone = detectmob();
-var choose = null, mouse = false, speed = 5000, cspeed = 1;
-var startX = startY = endX = endY = 0;
-var main = $("#main");
-var end = $("#end");
-var leftchoice = $("#correct");
-var rightchoice = $("#wrong");
-var story = document.querySelector("#main");
-var over = document.querySelector("#end");
-var correct = document.querySelector(".correct");
-var wrong = document.querySelector(".wrong");
-
 getWidth();
 mouseRead();
 touchRead();
-Getdot();
 
 //設定寬度
 function getWidth(event){
@@ -60,13 +62,6 @@ function detectmob() {
     }
 }
 
-function Getdot(){
-    dot1.style.display = 'none';
-    dot2.style.display = 'none';
-    dot3.style.display = 'none';
-    dot4.style.display = 'none';
-    dot5.style.display = 'none';
-}
 
 function Init(){
     choose = null;
@@ -74,18 +69,19 @@ function Init(){
     startX = startY = endX = endY = 0;
     comic.css("display","block");
     error.css("display","none");
+    unif.css("display","none");
     main.css("top",0);
     end.css("top",0);
-    dt = 0;
     leftchoice.css("display","none");
-    rightchoice.css("display","none");
-    leftchoice.css("left","-0px");
-    rightchoice.css("left","1px");
+    dt = 0;
+    leftchoice.css("left","0px");
+    // rightchoice.css("display","none");
+    // rightchoice.css("left","1px");
 }
 
 function nextStory(){
+    document.location.href="ch01_11_2.html";
 
-    document.location.href="ch01_11.html";
     // choose = null;
     // mouse = false;
     // startX = startY = endX = endY = 0;
@@ -96,17 +92,45 @@ function nextStory(){
     // rightchoice.css("left","1px");
 }
 
+
 function gameOver(){
     choose = null;
     mouse = false;
     startX = startY = endX = endY = 0;
+
     comic.css("display","none");
     error.css("display","block");
+    unif.css("display","none");
+    dot1.style.display = 'none';
+    dot2.style.display = 'none';
+    dot3.style.display = 'none';
+    dot4.style.display = 'none';
+    dot5.style.display = 'none';
     main.css("top",0);
     leftchoice.css("display","none");
-    rightchoice.css("display","none");
-    leftchoice.css("left","-0px");
-    rightchoice.css("left","1px");
+
+    // leftchoice.css("left","-0px"); 
+    // rightchoice.css("display","none");
+    // rightchoice.css("left","1px");
+}
+function uniform(){
+    choose = null;
+    mouse = false;
+    startX = startY = endX = endY = 0;
+    comic.css("display","none");
+    error.css("display","none");
+    unif.css("display","block");
+    dot1.style.display = 'none';
+    dot2.style.display = 'none';
+    dot3.style.display = 'none';
+    dot4.style.display = 'none';
+    dot5.style.display = 'none';
+    main.css("top",0);
+    leftchoice.css("display","none");
+
+    // leftchoice.css("left","-0px"); 
+    // rightchoice.css("display","none");
+    // rightchoice.css("left","1px");
 }
 
 //電腦指令
@@ -126,12 +150,46 @@ function mouseRead(){
                 var disranceY = (endY - startY);
                 if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
                     if(disranceY < 0){
-                        main.offset({top:pos.top + disranceY-10});
+                        if(main.position().top + disranceY > (-main.height() + $(window).height())){
+                            main.offset({top:pos.top + disranceY-10});
+                        }
                         if(main.position().top + disranceY < (-main.height() + $(window).height())){
+                            $(".correct").fadeIn();
+                            // $(".wrong").fadeIn();
+                        }
+                        else{
+                            $(".correct").fadeOut();
+                            // $(".wrong").fadeOut();
+                        }
+                    }
+                    else if(disranceY > 0){
+                        if(main.position().top + disranceY < 0){
+                            main.offset({top:pos.top + disranceY+10});
+                        }
+                        if(main.position().top + disranceY < 0){
+                            $(".correct").fadeOut();
+                            // $(".wrong").fadeOut();
+                        }
+                    }
+                    startY = endY;
+                }
+                break;
+
+            //錯誤故事
+            case 'gameover':
+                var pos = end.offset();
+                // endX = event.screenX;
+                endY = event.screenY;
+                // var distanceX = (endX - startX);
+                var disranceY = (endY - startY);
+                if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
+                    if(disranceY < 0){
+                        end.offset({top:pos.top + disranceY-10});
+                        if(end.position().top + disranceY < (-end.height() + $(window).height())){
                             var dot = $(window).height()/25;
                             
                         }
-                        if(main.position().top + disranceY < (-main.height() + $(window).height()) - $(window).height()/5){
+                        if(end.position().top + disranceY < (-end.height() + $(window).height()) - $(window).height()/5){
                             console.log(dt);
                             dt++;
                             if(dt == 1){
@@ -156,82 +214,108 @@ function mouseRead(){
                         }
                     }
                     else if(disranceY > 0){
-                        if(main.position().top + disranceY < 0){
-                            main.offset({top:pos.top + disranceY+10});
+                        if(end.position().top + disranceY < 0){
+                            end.offset({top:pos.top + disranceY+10});
                         }
                     }
                     startY = endY;
                 }
                 break;
 
-            /*//錯誤故事
-            case 'gameover':
-                var pos = end.offset();
-                // endX = event.screenX;
-                endY = event.screenY;
-                // var distanceX = (endX - startX);
-                var disranceY = (endY - startY);
-                if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
-                    if(disranceY < 0){
-                        end.offset({top:pos.top + disranceY * ((end.height() - $(window).height()) / speed)});
-                        if(end.position().top + disranceY * ((end.height() - $(window).height()) / speed) < (-end.height() + $(window).height()) - $(window).height()/5){
-                            Init();
+
+                case 'uniform':
+                    var pos = uniformget.offset();
+                    // endX = event.screenX;
+                    endY = event.screenY;
+                    // var distanceX = (endX - startX);
+                    var disranceY = (endY - startY);
+                    if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
+                        if(disranceY < 0){
+                            uniformget.offset({top:pos.top + disranceY-10});
+                            if(uniformget.position().top + disranceY < (-uniformget.height() + $(window).height())){
+                                var dot = $(window).height()/25;
+                                
+                            }
+                            if(uniformget.position().top + disranceY < (-uniformget.height() + $(window).height()) - $(window).height()/5){
+                                console.log(dt);
+                                dt++;
+                                if(dt == 1){
+                                    dot1.style.display = 'block';
+                                }
+                                if(dt == 3){
+                                    dot2.style.display = 'block';
+                                }
+                                if(dt == 5){
+                                    dot3.style.display = 'block';
+                                }
+                                if(dt == 7){
+                                    dot4.style.display = 'block';
+                                }
+                                if(dt == 9){
+                                    dot5.style.display = 'block';
+                                }
+                                if(dt == 10){
+                                    nextStory();
+                                }
+                                
+                            }
                         }
-                    }
-                    else if(disranceY > 0){
-                        if(end.position().top + disranceY * ((end.height() - $(window).height()) / speed) < 0){
-                            end.offset({top:pos.top + disranceY * ((end.height() - $(window).height()) / speed)});
+                        else if(disranceY > 0){
+                            if(uniformget.position().top + disranceY < 0){
+                                uniformget.offset({top:pos.top + disranceY+10});
+                            }
                         }
+                        startY = endY;
                     }
-                    startY = endY;
-                }
-                break;
+                    break;
             
-            //正確答案
-            case 'correctanswer':
-                var pos = leftchoice.offset();
-                endX = event.screenX;
-                // endY = event.screenY;
-                var distanceX = (endX - startX);
-                // var disranceY = (endY - startY);
-                if(mouse && startX != Math.abs(distanceX) && event.buttons == 1){
-                    if(distanceX < 0){
-                        leftchoice.offset({left:pos.left+distanceX/cspeed});
-                        if(leftchoice.position().left + distanceX / cspeed < -leftchoice.width() / 2){
-                            // leftchoice.offset({left:pos.left+distanceX/cspeed});
-                            // leftchoice.fadeOut();
-                            nextStory();
-                        }
-                    }
-                    if(distanceX > 0){
-                        if(leftchoice.position().left + distanceX / cspeed < 0)
+                //正確答案
+                case 'correctanswer':
+                    var pos = leftchoice.offset();
+                    endX = event.screenX;
+                    // endY = event.screenY;
+                    var distanceX = (endX - startX);
+                    // var disranceY = (endY - startY);
+                    if(mouse && startX != Math.abs(distanceX) && event.buttons == 1){
+                        if(distanceX < 0){
                             leftchoice.offset({left:pos.left+distanceX/cspeed});
+                            if(leftchoice.position().left + distanceX / cspeed < -leftchoice.width() / 2){
+                                // leftchoice.offset({left:pos.left+distanceX/cspeed});
+                                // leftchoice.fadeOut();
+                                nextStory();
+                            }
+                        }
+                        if(distanceX > 0){
+                            leftchoice.offset({left:pos.left + distanceX / cspeed});
+                            if(leftchoice.position().left + distanceX / cspeed > leftchoice.width() / 2){
+                                nextStory();
+                            }
+                        }
+                        startX = endX;
                     }
-                    startX = endX;
-                }
-                break;
+                    break;
 
             //錯誤答案
-            case 'wronganswer':
-                var pos = rightchoice.offset();
-                endX = event.screenX;
-                // endY = event.screenY;
-                var distanceX = (endX - startX);
-                // var disranceY = (endY - startY);
-                if(mouse && startX != Math.abs(distanceX) && event.buttons == 1){
-                    if(distanceX < 0){
-                        if(rightchoice.position().left + distanceX / cspeed > 0)
-                            rightchoice.offset({left:pos.left+distanceX/cspeed});
-                    }
-                    if(distanceX > 0){
-                        rightchoice.offset({left:pos.left + distanceX / cspeed});
-                        if(rightchoice.position().left + distanceX / cspeed > rightchoice.width() / 2){
-                            gameOver();
-                        }
-                    }
-                    startX = endX;
-                }
-                break;*/
+            // case 'wronganswer':
+            //     var pos = leftchoice.offset();
+            //     endX = event.screenX;
+            //     // endY = event.screenY;
+            //     var distanceX = (endX - startX);
+            //     // var disranceY = (endY - startY);
+            //     if(mouse && startX != Math.abs(distanceX) && event.buttons == 1){
+            //         if(distanceX < 0){
+            //             if(leftchoice.position().left + distanceX / cspeed > 0)
+            //             leftchoice.offset({left:pos.left+distanceX/cspeed});
+            //         }
+            //         if(distanceX > 0){
+            //             leftchoice.offset({left:pos.left + distanceX / cspeed});
+            //             if(leftchoice.position().left + distanceX / cspeed > leftchoice.width() / 2){
+            //                 gameOver();
+            //             }
+            //         }
+            //         startX = endX;
+            //     }
+            //     break;
         }
     });
 
@@ -247,12 +331,20 @@ function mouseRead(){
                 startX = startY = endX = endY = 0;
                 break;
 
-            /*//錯誤故事
+            //錯誤故事
             case 'gameover':
                 choose = null;
                 mouse = false;
                 startX = startY = endX = endY = 0;
                 break;
+
+            
+            //
+            case 'uniform':
+                choose = null;
+                mouse = false;
+                startX = startY = endX = endY = 0;
+                break;    
             
             //正確答案
             case 'correctanswer':
@@ -262,11 +354,11 @@ function mouseRead(){
                 break;
 
             //錯誤答案
-            case 'wronganswer':
-                choose = null;
-                mouse = false;
-                startX = startY = endX = endY = 0;
-                break;*/
+            // case 'wronganswer':
+            //     choose = null;
+            //     mouse = false;
+            //     startX = startY = endX = endY = 0;
+            //     break;
         }
     },false);
 
@@ -278,12 +370,21 @@ function mouseRead(){
         choose = 'story';
     }, false);
 
-    /*over.addEventListener('mousedown',function(event){
+    over.addEventListener('mousedown',function(event){
         // event.preventDefault();
         mouse = true;
         startX = event.screenX;
         startY = event.screenY;
         choose = 'gameover';
+    }, false);
+
+
+    uniformgetadd.addEventListener('mousedown',function(event){
+        // event.preventDefault();
+        mouse = true;
+        startX = event.screenX;
+        startY = event.screenY;
+        choose = 'uniform';
     }, false);
 
     correct.addEventListener('mousedown',function(event){
@@ -294,13 +395,13 @@ function mouseRead(){
         choose = 'correctanswer';
     }, false);
 
-    wrong.addEventListener('mousedown',function(event){
-        // event.preventDefault();
-        mouse = true;
-        startX = event.screenX;
-        startY = event.screenY;
-        choose = 'wronganswer';
-    }, false);*/
+    // wrong.addEventListener('mousedown',function(event){
+    //     // event.preventDefault();
+    //     mouse = true;
+    //     startX = event.screenX;
+    //     startY = event.screenY;
+    //     choose = 'wronganswer';
+    // }, false);
 }
 
 //手機指令
@@ -321,11 +422,42 @@ function touchRead(){
                 var disranceY = (endY - startY);
                 if(startY != Math.abs(disranceY)){
                     if(disranceY < 0){
-                        if(disranceY < -20){
-                            main.offset({top:pos.top + disranceY-20});
+                        if(main.position().top + disranceY > (-main.height() + $(window).height())){
+                            main.offset({top:pos.top + disranceY-10});
                         }
-                        main.offset({top:pos.top + disranceY-10});
-                        if(main.position().top + disranceY < (-main.height() + $(window).height()) - $(window).height()/5){
+                        if(main.position().top + disranceY < (-main.height() + $(window).height())){
+                            $(".correct").fadeIn();
+                            // $(".wrong").fadeIn();
+                        }
+                        else{
+                            $(".correct").fadeOut();
+                            // $(".wrong").fadeOut();
+                        }
+                    }
+                    else if(disranceY > 0){
+                        if(main.position().top + disranceY < 0){
+                            main.offset({top:pos.top + disranceY+10});
+                        }
+                        if(main.position().top + disranceY < 0){
+                            $(".correct").fadeOut();
+                            // $(".wrong").fadeOut();
+                        }
+                    }
+                    startY = endY;
+                }
+                break;
+
+            //錯誤故事
+            case 'gameover':
+                var pos = end.offset();
+                // endX = touch.screenX;
+                endY = touch.screenY;
+                // var distanceX = (endX - startX);
+                var disranceY = (endY - startY);
+                if(startY != Math.abs(disranceY)){
+                    if(disranceY < 0){
+                        end.offset({top:pos.top + disranceY-10});
+                        if(end.position().top + disranceY < (-end.height() + $(window).height()) - $(window).height()/5){
                             console.log(dt);
                             dt++;
                             if(dt == 1){
@@ -349,82 +481,109 @@ function touchRead(){
                         }
                     }
                     else if(disranceY > 0){
-                        if(main.position().top + disranceY < 0){
-                            main.offset({top:pos.top + disranceY+10});
-                        }
-                    }
-                    startY = endY;
-                }
-                break;
-
-            /*//錯誤故事
-            case 'gameover':
-                var pos = end.offset();
-                // endX = touch.screenX;
-                endY = touch.screenY;
-                // var distanceX = (endX - startX);
-                var disranceY = (endY - startY);
-                if(startY != Math.abs(disranceY)){
-                    if(disranceY < 0){
-                        end.offset({top:pos.top + disranceY * ((end.height() - $(window).height()) / speed)});
-                        if(end.position().top + disranceY * ((end.height() - $(window).height()) / speed) < (-end.height() + $(window).height()) - $(window).height()/5){
-                            Init();
-                        }
-                    }
-                    else if(disranceY > 0){
-                        if(end.position().top + disranceY * ((end.height() - $(window).height()) / speed) < 0){
-                            end.offset({top:pos.top + disranceY * ((end.height() - $(window).height()) / speed)});
+                        if(end.position().top + disranceY < 0){
+                            end.offset({top:pos.top + disranceY+10});
                         }
                     }
                     startY = endY;
                 }
                 break;
             
-            //正確答案
-            case 'correctanswer':
-                var pos = leftchoice.offset();
-                endX = touch.screenX;
-                // endY = touch.screenY;
-                var distanceX = (endX - startX);
-                // var disranceY = (endY - startY);
-                if(startX != Math.abs(distanceX)){
-                    if(distanceX < 0){
-                        leftchoice.offset({left:pos.left+distanceX/cspeed});
-                        if(leftchoice.position().left + distanceX / cspeed < -leftchoice.width() / 2){
-                            // leftchoice.offset({left:pos.left+distanceX/cspeed});
-                            // leftchoice.fadeOut();
-                            nextStory();
-                        }
-                    }
-                    if(distanceX > 0){
-                        if(leftchoice.position().left + distanceX / cspeed < 0)
-                            leftchoice.offset({left:pos.left+distanceX/cspeed});
-                    }
-                    startX = endX;
-                }
-                break;
 
-            //錯誤答案
-            case 'wronganswer':
-                var pos = rightchoice.offset();
-                endX = touch.screenX;
-                // endY = touch.screenY;
-                var distanceX = (endX - startX);
-                // var disranceY = (endY - startY);
-                if(startX != Math.abs(distanceX)){
-                    if(distanceX < 0){
-                        if(rightchoice.position().left + distanceX / cspeed > 0)
-                            rightchoice.offset({left:pos.left+distanceX/cspeed});
-                    }
-                    if(distanceX > 0){
-                        rightchoice.offset({left:pos.left + distanceX / cspeed});
-                        if(rightchoice.position().left + distanceX / cspeed > rightchoice.width() / 2){
-                            gameOver();
+                case 'uniform':
+                    var pos = uniformget.offset();
+                    // endX = event.screenX;
+                    endY = event.screenY;
+                    // var distanceX = (endX - startX);
+                    var disranceY = (endY - startY);
+                    if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
+                        if(disranceY < 0){
+                            uniformget.offset({top:pos.top + disranceY-10});
+                            if(uniformget.position().top + disranceY < (-uniformget.height() + $(window).height())){
+                                var dot = $(window).height()/25;
+                                
+                            }
+                            if(uniformget.position().top + disranceY < (-uniformget.height() + $(window).height()) - $(window).height()/5){
+                                console.log(dt);
+                                dt++;
+                                if(dt == 1){
+                                    dot1.style.display = 'block';
+                                }
+                                if(dt == 3){
+                                    dot2.style.display = 'block';
+                                }
+                                if(dt == 5){
+                                    dot3.style.display = 'block';
+                                }
+                                if(dt == 7){
+                                    dot4.style.display = 'block';
+                                }
+                                if(dt == 9){
+                                    dot5.style.display = 'block';
+                                }
+                                if(dt == 10){
+                                    nextStory();
+                                }
+                                
+                            }
                         }
+                        else if(disranceY > 0){
+                            if(uniformget.position().top + disranceY < 0){
+                                uniformget.offset({top:pos.top + disranceY+10});
+                            }
+                        }
+                        startY = endY;
                     }
-                    startX = endX;
-                }
-                break;*/
+                    break;
+                //正確答案
+                case 'correctanswer':
+                    var pos = leftchoice.offset();
+                    endX = touch.screenX;
+                    // endY = touch.screenY;
+                    var distanceX = (endX - startX);
+                    // var disranceY = (endY - startY);
+                    if(startX != Math.abs(distanceX)){
+                        if(distanceX < 0){
+                            leftchoice.offset({left:pos.left+distanceX/cspeed});
+                            if(leftchoice.position().left + distanceX / cspeed < -leftchoice.width() / 2){
+                                // leftchoice.offset({left:pos.left+distanceX/cspeed});
+                                // leftchoice.fadeOut();
+                                nextStory();
+                            }
+                        }
+                        if(distanceX > 0){
+                            // if(leftchoice.position().left + distanceX / cspeed < 0)
+                            //     leftchoice.offset({left:pos.left+distanceX/cspeed});
+                            leftchoice.offset({left:pos.left + distanceX / cspeed});
+                            if(leftchoice.position().left + distanceX / cspeed > leftchoice.width() / 2){
+                                nextStory();
+                            }
+                        }
+                        startX = endX;
+                    }
+                    break;
+
+            // //錯誤答案
+            // case 'wronganswer':
+            //     var pos = leftchoice.offset();
+            //     endX = touch.screenX;
+            //     // endY = touch.screenY;
+            //     var distanceX = (endX - startX);
+            //     // var disranceY = (endY - startY);
+            //     if(startX != Math.abs(distanceX)){
+            //         if(distanceX < 0){
+            //             if(leftchoice.position().left + distanceX / cspeed > 0)
+            //             leftchoice.offset({left:pos.left+distanceX/cspeed});
+            //         }
+            //         if(distanceX > 0){
+            //             leftchoice.offset({left:pos.left + distanceX / cspeed});
+            //             if(leftchoice.position().left + distanceX / cspeed > leftchoice.width() / 2){
+            //                 gameOver();
+            //             }
+            //         }
+            //         startX = endX;
+            //     }
+            //     break;
         }
     });
 
@@ -436,12 +595,18 @@ function touchRead(){
                 startX = startY = endX = endY = 0;
                 break;
 
-            /*//錯誤故事
+            //錯誤故事
             case 'gameover':
                 choose = null;
                 startX = startY = endX = endY = 0;
                 break;
             
+
+            case 'uniform':
+                choose = null;
+                mouse = false;
+                startX = startY = endX = endY = 0;
+                break; 
             //正確答案
             case 'correctanswer':
                 choose = null;
@@ -452,7 +617,7 @@ function touchRead(){
             case 'wronganswer':
                 choose = null;
                 startX = startY = endX = endY = 0;
-                break;*/
+                break;
         }
     },false);
 
@@ -464,7 +629,16 @@ function touchRead(){
         choose = 'story';
     }, false);
 
-    /*over.addEventListener('touchstart',function(event){
+    over.addEventListener('touchstart',function(event){
+        // event.preventDefault();
+        var touch = event.targetTouches[0];
+        startX = touch.screenX;
+        startY = touch.screenY;
+        choose = 'gameover';
+    }, false);
+
+
+    uniformgetadd.addEventListener('touchstart',function(event){
         // event.preventDefault();
         var touch = event.targetTouches[0];
         startX = touch.screenX;
@@ -480,11 +654,11 @@ function touchRead(){
         choose = 'correctanswer';
     }, false);
 
-    wrong.addEventListener('touchstart',function(event){
-        // event.preventDefault();
-        var touch = event.targetTouches[0];
-        startX = touch.screenX;
-        startY = touch.screenY;
-        choose = 'wronganswer';
-    }, false);*/
+    // wrong.addEventListener('touchstart',function(event){
+    //     // event.preventDefault();
+    //     var touch = event.targetTouches[0];
+    //     startX = touch.screenX;
+    //     startY = touch.screenY;
+    //     choose = 'wronganswer';
+    // }, false);
 }

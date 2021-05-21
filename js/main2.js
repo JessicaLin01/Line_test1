@@ -85,7 +85,7 @@ function Init(){
 
 function nextStory(){
 
-    document.location.href="ch01_2.html";
+    document.location.href="ch01_3.html";
     // choose = null;
     // mouse = false;
     // startX = startY = endX = endY = 0;
@@ -236,7 +236,6 @@ function mouseRead(){
     });
 
     window.addEventListener('mouseup',function(event){
-        
         choose = null;
         mouse = false;
         startX = startY = endX = endY = 0;
@@ -322,9 +321,9 @@ function touchRead(){
                 var disranceY = (endY - startY);
                 if(startY != Math.abs(disranceY)){
                     if(disranceY < 0){
-                        // if(disranceY < -20){
-                        //     main.offset({top:pos.top + disranceY-20});
-                        // }
+                        if(disranceY < -20){
+                            main.offset({top:pos.top + disranceY-20});
+                        }
                         main.offset({top:pos.top + disranceY-10});
                         if(main.position().top + disranceY < (-main.height() + $(window).height()) - $(window).height()/5){
                             console.log(dt);
@@ -430,7 +429,6 @@ function touchRead(){
     });
 
     window.addEventListener('touchend',function(event){
-        
         switch(choose){
             //主軸故事
             case 'story':
