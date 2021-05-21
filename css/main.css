@@ -64,18 +64,17 @@ body{
     max-width: 100%;
     z-index: 2;
 }
-
-.correct{
+.position{
     position: absolute;
-    /* margin-left: 1%; */
-    bottom: 0;
+    bottom: 0%;
 }
 
-.wrong{
+
+/* .wrong{
     position: absolute;
     bottom: 23%;
     margin-left: 52%;
-}
+} */
 
 .flex-dot{
     max-height: 100%;

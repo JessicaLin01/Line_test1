@@ -28,7 +28,7 @@ touchRead();
 
 //設定寬度
 function getWidth(event){
-    var scaleimg = $(window).width()/148;  //148為原先選項的圖片寬度
+    // var scaleimg = $(window).width()/148;  //148為原先選項的圖片寬度
     if(isPhone){
         var dWidth = $(window).width();
         comic.width(dWidth);
@@ -69,6 +69,7 @@ function Init(){
     leftchoice.css("display","none");
     dt = 0;
     leftchoice.css("left","0px");
+    
     // rightchoice.css("display","none");
     // rightchoice.css("left","1px");
 }
@@ -124,7 +125,7 @@ function mouseRead(){
                 if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
                     if(disranceY < 0){
                         if(main.position().top + disranceY > (-main.height() + $(window).height())){
-                            main.offset({top:pos.top + disranceY-10});
+                            main.offset({top:pos.top + disranceY});
                         }
                         if(main.position().top + disranceY < (-main.height() + $(window).height())){
                             $(".correct").fadeIn();
@@ -137,7 +138,7 @@ function mouseRead(){
                     }
                     else if(disranceY > 0){
                         if(main.position().top + disranceY < 0){
-                            main.offset({top:pos.top + disranceY+10});
+                            main.offset({top:pos.top + disranceY});
                         }
                         if(main.position().top + disranceY < 0){
                             $(".correct").fadeOut();
@@ -157,7 +158,7 @@ function mouseRead(){
                 var disranceY = (endY - startY);
                 if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
                     if(disranceY < 0){
-                        end.offset({top:pos.top + disranceY-10});
+                        end.offset({top:pos.top + disranceY});
                         if(end.position().top + disranceY < (-end.height() + $(window).height())){
                             var dot = $(window).height()/25;
                             
@@ -188,7 +189,7 @@ function mouseRead(){
                     }
                     else if(disranceY > 0){
                         if(end.position().top + disranceY < 0){
-                            end.offset({top:pos.top + disranceY+10});
+                            end.offset({top:pos.top + disranceY});
                         }
                     }
                     startY = endY;
@@ -204,16 +205,18 @@ function mouseRead(){
                 // var disranceY = (endY - startY);
                 if(mouse && startX != Math.abs(distanceX) && event.buttons == 1){
                     if(distanceX < 0){
+                        
                         leftchoice.offset({left:pos.left+distanceX/cspeed});
                         if(leftchoice.position().left + distanceX / cspeed < -leftchoice.width() / 2){
                             // leftchoice.offset({left:pos.left+distanceX/cspeed});
-                            // leftchoice.fadeOut();
+                            leftchoice.fadeOut();
                             nextStory();
                         }
                     }
                     if(distanceX > 0){
                         leftchoice.offset({left:pos.left + distanceX / cspeed});
                         if(leftchoice.position().left + distanceX / cspeed > leftchoice.width() / 2){
+                            leftchoice.fadeOut();
                             gameOver();
                         }
                     }
@@ -231,7 +234,7 @@ function mouseRead(){
             //     if(mouse && startX != Math.abs(distanceX) && event.buttons == 1){
             //         if(distanceX < 0){
             //             if(leftchoice.position().left + distanceX / cspeed > 0)
-            //             leftchoice.offset({left:pos.left+distanceX/cspeed});
+            //              leftchoice.offset({left:pos.left+distanceX/cspeed});
             //         }
             //         if(distanceX > 0){
             //             leftchoice.offset({left:pos.left + distanceX / cspeed});
@@ -332,7 +335,7 @@ function touchRead(){
                 if(startY != Math.abs(disranceY)){
                     if(disranceY < 0){
                         if(main.position().top + disranceY > (-main.height() + $(window).height())){
-                            main.offset({top:pos.top + disranceY-10});
+                            main.offset({top:pos.top + disranceY});
                         }
                         if(main.position().top + disranceY < (-main.height() + $(window).height())){
                             $(".correct").fadeIn();
@@ -345,7 +348,7 @@ function touchRead(){
                     }
                     else if(disranceY > 0){
                         if(main.position().top + disranceY < 0){
-                            main.offset({top:pos.top + disranceY+10});
+                            main.offset({top:pos.top + disranceY});
                         }
                         if(main.position().top + disranceY < 0){
                             $(".correct").fadeOut();
@@ -365,7 +368,7 @@ function touchRead(){
                 var disranceY = (endY - startY);
                 if(startY != Math.abs(disranceY)){
                     if(disranceY < 0){
-                        end.offset({top:pos.top + disranceY-10});
+                        end.offset({top:pos.top + disranceY});
                         if(end.position().top + disranceY < (-end.height() + $(window).height()) - $(window).height()/5){
                             console.log(dt);
                             dt++;
@@ -391,7 +394,7 @@ function touchRead(){
                     }
                     else if(disranceY > 0){
                         if(end.position().top + disranceY < 0){
-                            end.offset({top:pos.top + disranceY+10});
+                            end.offset({top:pos.top + disranceY});
                         }
                     }
                     startY = endY;

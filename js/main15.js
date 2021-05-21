@@ -127,7 +127,7 @@ function mouseRead(){
                 if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
                     if(disranceY < 0){
                         if(main.position().top + disranceY > (-main.height() + $(window).height())){
-                            main.offset({top:pos.top + disranceY-10});
+                            main.offset({top:pos.top + disranceY});
                         }
                         if(main.position().top + disranceY < (-main.height() + $(window).height())){
                             $(".correct").fadeIn();
@@ -140,7 +140,7 @@ function mouseRead(){
                     }
                     else if(disranceY > 0){
                         if(main.position().top + disranceY < 0){
-                            main.offset({top:pos.top + disranceY+10});
+                            main.offset({top:pos.top + disranceY});
                         }
                         if(main.position().top + disranceY < 0){
                             $(".correct").fadeOut();
@@ -309,7 +309,7 @@ function touchRead(){
                 if(startY != Math.abs(disranceY)){
                     if(disranceY < 0){
                         if(main.position().top + disranceY > (-main.height() + $(window).height())){
-                            main.offset({top:pos.top + disranceY-10});
+                            main.offset({top:pos.top + disranceY});
                         }
                         if(main.position().top + disranceY < (-main.height() + $(window).height())){
                             $(".correct").fadeIn();
@@ -322,7 +322,7 @@ function touchRead(){
                     }
                     else if(disranceY > 0){
                         if(main.position().top + disranceY < 0){
-                            main.offset({top:pos.top + disranceY+10});
+                            main.offset({top:pos.top + disranceY});
                         }
                         if(main.position().top + disranceY < 0){
                             $(".correct").fadeOut();

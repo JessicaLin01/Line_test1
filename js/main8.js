@@ -157,7 +157,7 @@ function mouseRead(){
                 if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
                     if(disranceY < 0){
                         if(main.position().top + disranceY > (-main.height() + $(window).height())){
-                            main.offset({top:pos.top + disranceY-10});
+                            main.offset({top:pos.top + disranceY});
                         }
                         if(main.position().top + disranceY < (-main.height() + $(window).height())){
                             $(".correct").fadeIn();
@@ -170,7 +170,7 @@ function mouseRead(){
                     }
                     else if(disranceY > 0){
                         if(main.position().top + disranceY < 0){
-                            main.offset({top:pos.top + disranceY+10});
+                            main.offset({top:pos.top + disranceY});
                         }
                         if(main.position().top + disranceY < 0){
                             $(".correct").fadeOut();
@@ -190,7 +190,7 @@ function mouseRead(){
                 var disranceY = (endY - startY);
                 if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
                     if(disranceY < 0){
-                        end.offset({top:pos.top + disranceY-10});
+                        end.offset({top:pos.top + disranceY});
                         if(end.position().top + disranceY < (-end.height() + $(window).height())){
                             var dot = $(window).height()/25;
                             
@@ -221,7 +221,7 @@ function mouseRead(){
                     }
                     else if(disranceY > 0){
                         if(end.position().top + disranceY < 0){
-                            end.offset({top:pos.top + disranceY+10});
+                            end.offset({top:pos.top + disranceY});
                         }
                     }
                     startY = endY;
@@ -237,7 +237,7 @@ function mouseRead(){
                     var disranceY = (endY - startY);
                     if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
                         if(disranceY < 0){
-                            uniformget.offset({top:pos.top + disranceY-10});
+                            uniformget.offset({top:pos.top + disranceY});
                             if(uniformget.position().top + disranceY < (-uniformget.height() + $(window).height())){
                                 var dot = $(window).height()/25;
                                 
@@ -268,7 +268,7 @@ function mouseRead(){
                         }
                         else if(disranceY > 0){
                             if(uniformget.position().top + disranceY < 0){
-                                uniformget.offset({top:pos.top + disranceY+10});
+                                uniformget.offset({top:pos.top + disranceY});
                             }
                         }
                         startY = endY;
@@ -429,7 +429,7 @@ function touchRead(){
                 if(startY != Math.abs(disranceY)){
                     if(disranceY < 0){
                         if(main.position().top + disranceY > (-main.height() + $(window).height())){
-                            main.offset({top:pos.top + disranceY-10});
+                            main.offset({top:pos.top + disranceY});
                         }
                         if(main.position().top + disranceY < (-main.height() + $(window).height())){
                             $(".correct").fadeIn();
@@ -442,7 +442,7 @@ function touchRead(){
                     }
                     else if(disranceY > 0){
                         if(main.position().top + disranceY < 0){
-                            main.offset({top:pos.top + disranceY+10});
+                            main.offset({top:pos.top + disranceY});
                         }
                         if(main.position().top + disranceY < 0){
                             $(".correct").fadeOut();
@@ -462,7 +462,7 @@ function touchRead(){
                 var disranceY = (endY - startY);
                 if(startY != Math.abs(disranceY)){
                     if(disranceY < 0){
-                        end.offset({top:pos.top + disranceY-10});
+                        end.offset({top:pos.top + disranceY});
                         if(end.position().top + disranceY < (-end.height() + $(window).height()) - $(window).height()/5){
                             console.log(dt);
                             dt++;
@@ -488,7 +488,7 @@ function touchRead(){
                     }
                     else if(disranceY > 0){
                         if(end.position().top + disranceY < 0){
-                            end.offset({top:pos.top + disranceY+10});
+                            end.offset({top:pos.top + disranceY});
                         }
                     }
                     startY = endY;
@@ -504,7 +504,7 @@ function touchRead(){
                     var disranceY = (endY - startY);
                     if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
                         if(disranceY < 0){
-                            uniformget.offset({top:pos.top + disranceY-10});
+                            uniformget.offset({top:pos.top + disranceY});
                             if(uniformget.position().top + disranceY < (-uniformget.height() + $(window).height())){
                                 var dot = $(window).height()/25;
                                 
@@ -535,7 +535,7 @@ function touchRead(){
                         }
                         else if(disranceY > 0){
                             if(uniformget.position().top + disranceY < 0){
-                                uniformget.offset({top:pos.top + disranceY+10});
+                                uniformget.offset({top:pos.top + disranceY});
                             }
                         }
                         startY = endY;
