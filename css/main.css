@@ -1,5 +1,7 @@
 body{
     margin: 0%;
+    max-height: 2000px;
+    max-width: 100%;
 }
 .comics{
     display: block;
@@ -24,7 +26,8 @@ body{
     right: 0;
     margin: auto;
     z-index: 1;
-    overflow: hidden;
+    overflow: scroll;
+    
 }
 
 .comics::-webkit-scrollbar {
