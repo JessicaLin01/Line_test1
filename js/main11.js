@@ -77,21 +77,13 @@ function Init(){
     leftchoice.css("display","none");
     dt = 0;
     leftchoice.css("left","0px");
-    // rightchoice.css("display","none");
-    // rightchoice.css("left","1px");
+
 }
 
 function nextStory(){
     document.location.href="ch01_11_2.html";
 
-    // choose = null;
-    // mouse = false;
-    // startX = startY = endX = endY = 0;
-    // main.css("top",0);
-    // leftchoice.css("display","none");
-    // rightchoice.css("display","none");
-    // leftchoice.css("left","-0px");
-    // rightchoice.css("left","1px");
+    
 }
 
 
@@ -111,9 +103,7 @@ function gameOver(){
     main.css("top",0);
     leftchoice.css("display","none");
 
-    // leftchoice.css("left","-0px"); 
-    // rightchoice.css("display","none");
-    // rightchoice.css("left","1px");
+
 }
 function uniform(){
     choose = null;
@@ -130,9 +120,7 @@ function uniform(){
     main.css("top",0);
     leftchoice.css("display","none");
 
-    // leftchoice.css("left","-0px"); 
-    // rightchoice.css("display","none");
-    // rightchoice.css("left","1px");
+  
 }
 
 //電腦指令
@@ -297,27 +285,7 @@ function mouseRead(){
                     }
                     break;
 
-            //錯誤答案
-            // case 'wronganswer':
-            //     var pos = leftchoice.offset();
-            //     endX = event.screenX;
-            //     // endY = event.screenY;
-            //     var distanceX = (endX - startX);
-            //     // var disranceY = (endY - startY);
-            //     if(mouse && startX != Math.abs(distanceX) && event.buttons == 1){
-            //         if(distanceX < 0){
-            //             if(leftchoice.position().left + distanceX / cspeed > 0)
-            //             leftchoice.offset({left:pos.left+distanceX/cspeed});
-            //         }
-            //         if(distanceX > 0){
-            //             leftchoice.offset({left:pos.left + distanceX / cspeed});
-            //             if(leftchoice.position().left + distanceX / cspeed > leftchoice.width() / 2){
-            //                 gameOver();
-            //             }
-            //         }
-            //         startX = endX;
-            //     }
-            //     break;
+            
         }
     });
 
@@ -355,12 +323,7 @@ function mouseRead(){
                 startX = startY = endX = endY = 0;
                 break;
 
-            //錯誤答案
-            // case 'wronganswer':
-            //     choose = null;
-            //     mouse = false;
-            //     startX = startY = endX = endY = 0;
-            //     break;
+            
         }
     },false);
 
@@ -397,13 +360,7 @@ function mouseRead(){
         choose = 'correctanswer';
     }, false);
 
-    // wrong.addEventListener('mousedown',function(event){
-    //     // event.preventDefault();
-    //     mouse = true;
-    //     startX = event.screenX;
-    //     startY = event.screenY;
-    //     choose = 'wronganswer';
-    // }, false);
+    
 }
 
 //手機指令
@@ -565,27 +522,7 @@ function touchRead(){
                     }
                     break;
 
-            // //錯誤答案
-            // case 'wronganswer':
-            //     var pos = leftchoice.offset();
-            //     endX = touch.screenX;
-            //     // endY = touch.screenY;
-            //     var distanceX = (endX - startX);
-            //     // var disranceY = (endY - startY);
-            //     if(startX != Math.abs(distanceX)){
-            //         if(distanceX < 0){
-            //             if(leftchoice.position().left + distanceX / cspeed > 0)
-            //             leftchoice.offset({left:pos.left+distanceX/cspeed});
-            //         }
-            //         if(distanceX > 0){
-            //             leftchoice.offset({left:pos.left + distanceX / cspeed});
-            //             if(leftchoice.position().left + distanceX / cspeed > leftchoice.width() / 2){
-            //                 gameOver();
-            //             }
-            //         }
-            //         startX = endX;
-            //     }
-            //     break;
+            
         }
     });
 
@@ -656,11 +593,5 @@ function touchRead(){
         choose = 'correctanswer';
     }, false);
 
-    // wrong.addEventListener('touchstart',function(event){
-    //     // event.preventDefault();
-    //     var touch = event.targetTouches[0];
-    //     startX = touch.screenX;
-    //     startY = touch.screenY;
-    //     choose = 'wronganswer';
-    // }, false);
+   
 }
