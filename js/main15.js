@@ -211,7 +211,8 @@ function autuScrolling(dt) {
         bAutoScrolling = false;
     }
     else { // 自動捲動
-        var distY = ScrollingDir * Math.cos(halfPI * ElapsedTime / ScrollingTime) * ScrollingDist; // 以 5 像素為單位
+        var cosValue = Math.cos(halfPI * ElapsedTime / ScrollingTime);
+        var distY = ScrollingDir * cosValue * cosValue * ScrollingDist; // 以 5 像素為單位
         //console.log(distY);
         if (ScrollingDir == -1) {
             if (main.position().top + distY > (-main.height() + $(window).height())) {
