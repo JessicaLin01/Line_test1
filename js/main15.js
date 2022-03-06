@@ -16,7 +16,8 @@ var ElapsedTime = 0;
 var curDistance = 0; // 只要記錄 Y 軸移動的前一個位置
 var ScrollingDir = -1; // 正往上，負往下
 var halfPI = 1.5707963;
-var ScrollingDist = 20;  // 自動移動的單位時間的移動單位
+var ScrollingDist = 30;  // 自動移動的單位時間的移動單位
+var defaultTime = 18;  // 1.8秒 * 1000
 //---------------------------
 
 getWidth();
@@ -113,7 +114,7 @@ function mouseRead(){
             if (curDistance < 0) ScrollingDir = -1;
             else ScrollingDir = 1;
             bAutoScrolling = true;
-            ScrollingTime = 15 * distance; // 1.5 (sec) * 1000 *  distance / 100;
+            ScrollingTime = defaultTime * distance; // 1.8 (sec) * 1000 *  distance / 100;
             ScrollingID = setInterval(autuScrolling, 16.66667, 16.66667);
         }
         // ----------- 自動捲動
@@ -185,7 +186,7 @@ function touchRead(){
             if (curDistance < 0) ScrollingDir = -1;
             else ScrollingDir = 1;
             bAutoScrolling = true;
-            ScrollingTime = 15 * distance; // 1.5 (sec) * 1000 *  distance / 100;
+            ScrollingTime = defaultTime * distance; // 1.5 (sec) * 1000 *  distance / 100;
             ScrollingID = setInterval(autuScrolling, 16.66667, 16.66667);
         }
         // ----------- 自動捲動
