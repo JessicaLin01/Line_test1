@@ -10,14 +10,15 @@ var story = document.querySelector("#main");
 
 // 以下變數用於畫面自動捲動
 var bAutoScrolling = false;
-var ScrollingTime = 0;
-var ScrollingID = 0;
-var ElapsedTime = 0;
+var ScrollingTime = 0; // 自動捲動的時間
+var ScrollingID = 0; 
+var ElapsedTime = 0; // 自動捲動經過的時間   
 var curDistance = 0; // 只要記錄 Y 軸移動的前一個位置
 var ScrollingDir = -1; // 正往上，負往下
-var halfPI = 1.5707963;
-var ScrollingDist = 30;  // 自動移動的單位時間的移動單位
-var defaultTime = 30;  // 1.8秒 * 1000
+var halfPI = 1.5707963; // PI/2
+var ScrollingDist = 30;  // 自動移動的單位時間的移動單位 30 Pixels
+var MaxScrollingTime = 30;  // 自動捲動的最大秒數：單位是 3秒 * 1000(毫秒)/ 100(移動距離 100 pixels 為 1)
+var MovingThreshold = 5;  // 最後一次滑動最大啟動自動捲動的像素值
 //---------------------------
 
 getWidth();
@@ -72,20 +73,20 @@ function mouseRead(){
             case 'story':
                 var pos = main.offset();
                 endY = event.screenY;              
-                var disranceY = (endY - startY);              
-                if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
-                    if(disranceY < 0){
-                        if(main.position().top + disranceY > (-main.height() + $(window).height())){
-                            main.offset({top:pos.top + disranceY});
+                var distanceY = (endY - startY);              
+                if(mouse && startY != Math.abs(distanceY) && event.buttons == 1){
+                    if(distanceY < 0){
+                        if(main.position().top + distanceY > (-main.height() + $(window).height())){
+                            main.offset({top:pos.top + distanceY});
                         }
                     }
-                    else if(disranceY > 0){
-                        if(main.position().top + disranceY < 0){
-                            main.offset({top:pos.top + disranceY});
+                    else if(distanceY > 0){
+                        if(main.position().top + distanceY < 0){
+                            main.offset({top:pos.top + distanceY});
                         }
                     }
                     startY = endY;
-                    curDistance = disranceY;  // ----------- 自動捲動，紀錄這次的移動距離為
+                    curDistance = distanceY;  // ----------- 自動捲動，紀錄這次的移動距離為
                 }
                 break; 
         }
@@ -102,11 +103,11 @@ function mouseRead(){
         // 以 cos(時間) 值作為自動滑動的移動距離 
         //  
         var distance = Math.abs(curDistance);
-        if (distance >= 3) { // 移動超過三個 pixel 才自動捲動
+        if (distance >= MovingThreshold) { // 移動超過 MovingThreshold 才自動捲動
             if (curDistance < 0) ScrollingDir = -1;
             else ScrollingDir = 1;
             bAutoScrolling = true;
-            ScrollingTime = defaultTime * distance; // 1.8 (sec) * 1000 *  distance / 100;
+            ScrollingTime = MaxScrollingTime * distance; 
             ScrollingID = setInterval(autuScrolling, 16.66667, 16.66667);
         }
         // ----------- 自動捲動
@@ -141,20 +142,20 @@ function touchRead(){
             case 'story':
                 var pos = main.offset();
                 endY = touch.screenY;
-                var disranceY = (endY - startY);
-                if(startY != Math.abs(disranceY)){
-                    if(disranceY < 0){
-                        if(main.position().top + disranceY > (-main.height() + $(window).height())){
-                            main.offset({top:pos.top + disranceY});
+                var distanceY = (endY - startY);
+                if(startY != Math.abs(distanceY)){
+                    if(distanceY < 0){
+                        if(main.position().top + distanceY > (-main.height() + $(window).height())){
+                            main.offset({top:pos.top + distanceY});
                         }
                     }
-                    else if(disranceY > 0){
-                        if(main.position().top + disranceY < 0){
-                            main.offset({top:pos.top + disranceY});
+                    else if(distanceY > 0){
+                        if(main.position().top + distanceY < 0){
+                            main.offset({top:pos.top + distanceY});
                         }
                     }
                     startY = endY;
-                    curDistance = disranceY;  // ----------- 自動捲動，紀錄這次的移動距離為
+                    curDistance = distanceY;  // ----------- 自動捲動，紀錄這次的移動距離為
                 }
                 break;
         }
@@ -174,11 +175,11 @@ function touchRead(){
                 // 以 cos(時間) 值作為自動滑動的移動距離 
                 //  
                 var distance = Math.abs(curDistance);
-                if (distance >= 3) { // 移動超過三個 pixel 才自動捲動
+                if (distance >= MovingThreshold) { // 移動超過三個 pixel 才自動捲動
                     if (curDistance < 0) ScrollingDir = -1;
                     else ScrollingDir = 1;
                     bAutoScrolling = true;
-                    ScrollingTime = defaultTime * distance; // 1.5 (sec) * 1000 *  distance / 100;
+                    ScrollingTime = MaxScrollingTime * distance; 
                     ScrollingID = setInterval(autuScrolling, 16.66667, 16.66667);
                 }
                 // ----------- 自動捲動
@@ -196,10 +197,9 @@ function touchRead(){
 }
 
 // 自動捲動控制
-
-function autuScrolling(dt) {
+function autuScrolling(dTime) {
     var pos = main.offset();
-    ElapsedTime = ElapsedTime + dt;  // ElapsedTime 目前的總經過時間
+    ElapsedTime = ElapsedTime + dTime;  // ElapsedTime 目前的總經過時間
     if (ElapsedTime >= ScrollingTime) { // 自動捲動結束
         clearInterval(ScrollingID);
         ElapsedTime = 0;
