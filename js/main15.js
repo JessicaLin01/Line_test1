@@ -17,7 +17,7 @@ var curDistance = 0; // 只要記錄 Y 軸移動的前一個位置
 var ScrollingDir = -1; // 正往上，負往下
 var halfPI = 1.5707963;
 var ScrollingDist = 30;  // 自動移動的單位時間的移動單位
-var defaultTime = 18;  // 1.8秒 * 1000
+var defaultTime = 15;  // 1.8秒 * 1000
 //---------------------------
 
 getWidth();
@@ -94,14 +94,6 @@ function mouseRead(){
         choose = null;
         mouse = false;
         startX = startY = endX = endY = 0;
-        switch(choose){
-            //主軸故事
-            case 'story':
-                choose = null;
-                mouse = false;
-                startX = startY = endX = endY = 0;
-                break;
-        }
         // ----------- 自動捲動
         // 當手指離開時，將目前的移動距離，當成最後一次的移動距離
         // 根據正負方向與移動距離，計算自動撥放的時間長度
@@ -118,6 +110,8 @@ function mouseRead(){
             ScrollingID = setInterval(autuScrolling, 16.66667, 16.66667);
         }
         // ----------- 自動捲動
+
+
     },false);
     story.addEventListener('mousedown',function(event){
         mouse = true;
@@ -172,24 +166,25 @@ function touchRead(){
             case 'story':
                 choose = null;
                 startX = startY = endX = endY = 0;
+                // ----------- 自動捲動
+                // 當手指離開時，將目前的移動距離，當成最後一次的移動距離
+                // 根據正負方向與移動距離，計算自動撥放的時間長度
+                // 負數往下，正數往上
+                // 透過在指定的時間內呼叫 autoscrolling 函式，來實現自動滑動
+                // 以 cos(時間) 值作為自動滑動的移動距離 
+                //  
+                var distance = Math.abs(curDistance);
+                if (distance >= 3) { // 移動超過三個 pixel 才自動捲動
+                    if (curDistance < 0) ScrollingDir = -1;
+                    else ScrollingDir = 1;
+                    bAutoScrolling = true;
+                    ScrollingTime = defaultTime * distance; // 1.5 (sec) * 1000 *  distance / 100;
+                    ScrollingID = setInterval(autuScrolling, 16.66667, 16.66667);
+                }
+                // ----------- 自動捲動
                 break;
         }
-        // ----------- 自動捲動
-        // 當手指離開時，將目前的移動距離，當成最後一次的移動距離
-        // 根據正負方向與移動距離，計算自動撥放的時間長度
-        // 負數往下，正數往上
-        // 透過在指定的時間內呼叫 autoscrolling 函式，來實現自動滑動
-        // 以 cos(時間) 值作為自動滑動的移動距離 
-        //  
-        var distance = Math.abs(curDistance);
-        if (distance >= 3) { // 移動超過三個 pixel 才自動捲動
-            if (curDistance < 0) ScrollingDir = -1;
-            else ScrollingDir = 1;
-            bAutoScrolling = true;
-            ScrollingTime = defaultTime * distance; // 1.5 (sec) * 1000 *  distance / 100;
-            ScrollingID = setInterval(autuScrolling, 16.66667, 16.66667);
-        }
-        // ----------- 自動捲動
+
     },false);
 
     story.addEventListener('touchstart',function(event){
@@ -212,7 +207,7 @@ function autuScrolling(dt) {
     }
     else { // 自動捲動
         var cosValue = Math.cos(halfPI * ElapsedTime / ScrollingTime);
-        var distY = ScrollingDir * cosValue * cosValue * ScrollingDist; // 以 5 像素為單位
+        var distY = ScrollingDir * cosValue * cosValue * cosValue * ScrollingDist; // 以 5 像素為單位
         //console.log(distY);
         if (ScrollingDir == -1) {
             if (main.position().top + distY > (-main.height() + $(window).height())) {
