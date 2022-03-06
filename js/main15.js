@@ -17,7 +17,7 @@ var curDistance = 0; // 只要記錄 Y 軸移動的前一個位置
 var ScrollingDir = -1; // 正往上，負往下
 var halfPI = 1.5707963;
 var ScrollingDist = 30;  // 自動移動的單位時間的移動單位
-var defaultTime = 15;  // 1.8秒 * 1000
+var defaultTime = 30;  // 1.8秒 * 1000
 //---------------------------
 
 getWidth();
