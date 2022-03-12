@@ -38,6 +38,10 @@ var MovingThreshold = 5;  // 最後一次滑動最大啟動自動捲動的像素
 //---------------------------
 // 修正最後出現點點點的 BUG
 var bShowDot = false;
+var displayDotStep = 0;
+var displayDotStart = 0;
+var curBottomPos = 0;
+var numDotOn = 0;
 //---------------------------
 
 getWidth();
@@ -132,8 +136,8 @@ function mouseRead(){
         //----------- 自動捲動
     }, {passive: false});
 
-    window.addEventListener('mousemove',function(event){
-        switch(choose){
+    window.addEventListener('mousemove', function (event) {
+        switch (choose) {
             //主軸故事
             case 'story':
                 var pos = main.offset();
@@ -141,50 +145,68 @@ function mouseRead(){
                 endY = event.screenY;
                 // var distanceX = (endX - startX);
                 var distanceY = (endY - startY);
-                if(mouse && startY != Math.abs(distanceY) && event.buttons == 1){
-                    if(distanceY < 0){
-                        main.offset({top:pos.top + distanceY-speedplus});
-                        //if(main.position().top + distanceY < (-main.height() + $(window).height())){
-                        //    var dot = $(window).height() / 25; // ?? 不知道做啥用的, 這一行，先設定成註解
-                        //}
-                        if (main.position().top + distanceY < (-main.height() + $(window).height()) - $(window).height() / 5) {
-                            // 進入 dot 顯示狀態
-                            // console.log(main.position().top + distanceY, -main.height() + $(window).height());
-                            // console.log(dt);
-                            bShowDot = true;
-                            dt++;
-                            if (dt == 1) {
-                                dot1.style.display = 'block';
-                            }
-                            if (dt == 3) {
-                                dot2.style.display = 'block';
-                            }
-                            if (dt == 5) {
-                                dot3.style.display = 'block';
-                            }
-                            if (dt == 7) {
-                                dot4.style.display = 'block';
-                            }
-                            if (dt == 9) {
-                                dot5.style.display = 'block';
-                            }
-                            if (dt == 10) {
-                                nextStory();
-                            }
+                if (mouse && startY != Math.abs(distanceY) && event.buttons == 1) {
+                    if (distanceY < 0) {
+                        main.offset({ top: pos.top + distanceY - speedplus });
+                        // ----------  修正 dot 顯示的問題
+                        displayDotStep = $(window).height() / (5*6); // 分成六等份
+                        displayDotStart = (-main.height() + $(window).height()) - $(window).height() / 5;
+                        curBottomPos = main.position().top + distanceY;
 
+                        if (curBottomPos < displayDotStart) {
+                            //console.log(curBottomPos);
+                            // 根據 main.position().top + distanceY 所在的位置，設定不同 dot 的顯示狀態
+                            bShowDot = true; // 顯示 dot
+                            var t = Math.ceil((displayDotStart - curBottomPos) / displayDotStep);
+                            if (numDotOn != t) // 只要目前顯示的跟所在位置應顯示的 dot 數目不同就更新
+                            {
+                                if (t != 6) {
+                                    displayDots(t); numDotOn = t;
+                                }
+                                else {  // 轉換到下一章
+                                    nextStory();
+                                }
+                            }
                         }
+                        // --------------------------------------
                     }
                     else if(distanceY > 0){
-                        if(main.position().top + distanceY < 0){
-                            main.offset({top:pos.top + distanceY+speedplus});
-                        }
-                        if ( bShowDot == true ) {  // 檢查是否在 bShowDot 狀態
-                            dot1.style.display = 'none';
-                            dot2.style.display = 'none';
-                            dot3.style.display = 'none';
-                            dot4.style.display = 'none';
-                            dot5.style.display = 'none';
-                            dt = 0; bShowDot = false;
+                        if (main.position().top + distanceY < 0) {
+                            main.offset({ top: pos.top + distanceY + speedplus });
+
+                             // ----------  修正 dot 顯示的問題
+                            displayDotStep = $(window).height() / (5 * 6); // 分成六等份
+                            displayDotStart = (-main.height() + $(window).height()) - $(window).height() / 5;
+                            curBottomPos = main.position().top + distanceY;
+
+                            if (curBottomPos < displayDotStart) {
+                                if (curBottomPos < displayDotStart) {
+                                    // 根據 main.position().top + distanceY 所在的位置，設定不同 dot 的顯示狀態
+                                    // 進入 dot 顯示狀態
+                                    bShowDot = true;
+                                    var t = Math.ceil((displayDotStart - curBottomPos) / displayDotStep);
+                                    if (numDotOn != t) // 代表目前 Dot 顯示不足，操作者往下捲動
+                                    {
+                                        if (t != 6) {
+                                            displayDots(t); numDotOn = t;
+                                        }
+                                        else {  // 轉換到下一章
+                                            nextStory();
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                if (bShowDot == true) {  // 檢查是否在 bShowDot 狀態
+                                    dot1.style.display = 'none';
+                                    dot2.style.display = 'none';
+                                    dot3.style.display = 'none';
+                                    dot4.style.display = 'none';
+                                    dot5.style.display = 'none';
+                                    dt = 0; bShowDot = false;
+                                }
+                            }
+                            // --------------------------------------
                         }
                     }
                     startY = endY;
@@ -257,42 +279,65 @@ function touchRead(){
                         if(distanceY < -20){
                             main.offset({top:pos.top + distanceY-20});
                         }
-                        main.offset({top:pos.top + distanceY-speedplus});
-                        if( main.position().top + distanceY < (-main.height() + $(window).height()) - $(window).height()/5 ){
-                            //console.log(dt);
-                            bShowDot = true;
-                            dt++;
-                            if(dt == 1){
-                                dot1.style.display = 'block';
-                            }
-                            if(dt == 3){
-                                dot2.style.display = 'block';
-                            }
-                            if(dt == 5){
-                                dot3.style.display = 'block';
-                            }
-                            if(dt == 7){
-                                dot4.style.display = 'block';
-                            }
-                            if(dt == 9){
-                                dot5.style.display = 'block';
-                            }
-                            if(dt == 10){
-                                nextStory();
+                        main.offset({ top: pos.top + distanceY - speedplus });
+                        // ----------  修正 dot 顯示的問題
+                        displayDotStep = $(window).height() / (5 * 6); // 分成六等份
+                        displayDotStart = (-main.height() + $(window).height()) - $(window).height() / 5;
+                        curBottomPos = main.position().top + distanceY;
+
+                        if (curBottomPos < displayDotStart) {
+                            //console.log(curBottomPos);
+                            // 根據 main.position().top + distanceY 所在的位置，設定不同 dot 的顯示狀態
+                            bShowDot = true; // 顯示 dot
+                            var t = Math.ceil((displayDotStart - curBottomPos) / displayDotStep);
+                            if (numDotOn != t) // 只要目前顯示的跟所在位置應顯示的 dot 數目不同就更新
+                            {
+                                if (t != 6) {
+                                    displayDots(t); numDotOn = t;
+                                }
+                                else {  // 轉換到下一章
+                                    nextStory();
+                                }
                             }
                         }
+                        // --------------------------------------
                     }
                     else if(distanceY > 0){
                         if( main.position().top + distanceY < 0 ){
-                            main.offset({top:pos.top + distanceY+speedplus});
-                        }
-                        if (bShowDot == true) {  // 檢查是否在 bShowDot 狀態
-                            dot1.style.display = 'none';
-                            dot2.style.display = 'none';
-                            dot3.style.display = 'none';
-                            dot4.style.display = 'none';
-                            dot5.style.display = 'none';
-                            dt = 0; bShowDot = false;
+                            main.offset({ top: pos.top + distanceY + speedplus });
+                            // ----------  修正 dot 顯示的問題
+                            displayDotStep = $(window).height() / (5 * 6); // 分成六等份
+                            displayDotStart = (-main.height() + $(window).height()) - $(window).height() / 5;
+                            curBottomPos = main.position().top + distanceY;
+
+                            if (curBottomPos < displayDotStart) {
+                                if (curBottomPos < displayDotStart) {
+                                    // 根據 main.position().top + distanceY 所在的位置，設定不同 dot 的顯示狀態
+                                    // 進入 dot 顯示狀態
+                                    bShowDot = true;
+                                    var t = Math.ceil((displayDotStart - curBottomPos) / displayDotStep);
+                                    if (numDotOn != t) // 代表目前 Dot 顯示不足，操作者往下捲動
+                                    {
+                                        if (t != 6) {
+                                            displayDots(t); numDotOn = t;
+                                        }
+                                        else {  // 轉換到下一章
+                                            nextStory();
+                                        }
+                                    }
+                                }
+                            }
+                            else {
+                                if (bShowDot == true) {  // 檢查是否在 bShowDot 狀態
+                                    dot1.style.display = 'none';
+                                    dot2.style.display = 'none';
+                                    dot3.style.display = 'none';
+                                    dot4.style.display = 'none';
+                                    dot5.style.display = 'none';
+                                    dt = 0; bShowDot = false;
+                                }
+                            }
+                            // --------------------------------------
                         }
                     }
                     startY = endY;
@@ -335,6 +380,46 @@ function touchRead(){
         startY = touch.screenY;
         choose = 'story';
     }, false);
+}
+
+function displayDots(ndot) {
+    switch (ndot) {
+        case 1:
+            dot1.style.display = 'block' ;
+            dot2.style.display = 'none';
+            dot3.style.display = 'none';
+            dot4.style.display = 'none';
+            dot5.style.display = 'none';
+            break;
+        case 2:
+            dot1.style.display = 'block';
+            dot2.style.display = 'block';
+            dot3.style.display = 'none';
+            dot4.style.display = 'none';
+            dot5.style.display = 'none';
+            break;
+        case 3:
+            dot1.style.display = 'block';
+            dot2.style.display = 'block';
+            dot3.style.display = 'block';
+            dot4.style.display = 'none';
+            dot5.style.display = 'none';
+            break;
+        case 4:
+            dot1.style.display = 'block';
+            dot2.style.display = 'block';
+            dot3.style.display = 'block';
+            dot4.style.display = 'block';
+            dot5.style.display = 'none';
+            break;
+        case 5:
+            dot1.style.display = 'block';
+            dot2.style.display = 'block';
+            dot3.style.display = 'block';
+            dot4.style.display = 'block';
+            dot5.style.display = 'block';
+            break;
+    }
 }
 
 // 自動捲動控制
