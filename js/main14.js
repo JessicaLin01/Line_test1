@@ -273,21 +273,26 @@ function touchRead(){
 
 function scrollingUp(distY) { // 處理頁面往上滑動，手指或滑鼠左鍵按住由下往上滑動螢幕
     // ----------  修正 dot 顯示的問題
-    displayDotStep = $(window).height() / (6); // 分成六等份
-    console.log(displayDotStep);
+    displayDotStep = $(window).height() / (2 * 6); // 分成六等份
+ //   console.log(displayDotStep);
     displayDotStart = (-main.height() + $(window).height()); //- $(window).height() /2;
     curBottomPos = main.position().top + distY;
-    console.log("ddStart", displayDotStart);
+    //console.log("ddStart", displayDotStart);
 
     if (curBottomPos < displayDotStart) {
         //console.log(curBottomPos);
         // 根據 main.position().top + distanceY 所在的位置，設定不同 dot 的顯示狀態
         bShowDot = true; // 顯示 dot
-        var t = Math.ceil((displayDotStart - curBottomPos) / displayDotStep);
+        console.log("diff", displayDotStart - curBottomPos);
+        console.log("t   ", (displayDotStart - curBottomPos) / displayDotStep);
+        var t = Math.floor((displayDotStart - curBottomPos) / displayDotStep);
+        console.log("Ceil t ", t);
+        console.log("numDotOn ", numDotOn);
         if (numDotOn != t) // 只要目前顯示的跟所在位置應顯示的 dot 數目不同就更新
         {
             if (t != 6) {
                 displayDots(t); numDotOn = t;
+                console.log("In===============");
             }
             else {  // 轉換到下一章
                 nextStory();
@@ -298,38 +303,44 @@ function scrollingUp(distY) { // 處理頁面往上滑動，手指或滑鼠左�
 }
 
 function scrollingDown(distY) { // 處理頁面往下滑動，手指或滑鼠左鍵按住由上往下滑動螢幕
-    displayDotStep = $(window).height() / (6); // 分成六等份
+    displayDotStep = $(window).height() / (2*6); // 分成六等份
     //console.log(displayDotStep);
     displayDotStart = (-main.height() + $(window).height()); // - $(window).height() / 5;
     curBottomPos = main.position().top + distY;
 
     if (curBottomPos < displayDotStart) {
-        if (curBottomPos < displayDotStart) {
-            // 根據 main.position().top + distanceY 所在的位置，設定不同 dot 的顯示狀態
-            // 進入 dot 顯示狀態
-            bShowDot = true;
-            var t = Math.ceil((displayDotStart - curBottomPos) / displayDotStep);
-            if (numDotOn != t) // 代表目前 Dot 顯示不足，操作者往下捲動
-            {
-                if (t != 6) {
+         // 根據 main.position().top + distanceY 所在的位置，設定不同 dot 的顯示狀態
+         // 進入 dot 顯示狀態
+         bShowDot = true;
+        var t = Math.floor((displayDotStart - curBottomPos) / displayDotStep);
+        if (numDotOn > 0) // 代表目前 Dot 顯示不足，操作者往下捲動
+        {
+            if (t != numDotOn) {
+                if (t != 0) {
                     displayDots(t); numDotOn = t;
                 }
-                else {  // 轉換到下一章
-                    nextStory();
+                else {
+                    numDotOn = 0;
+                    dot1.style.display = 'none';
+                    dot2.style.display = 'none';
+                    dot3.style.display = 'none';
+                    dot4.style.display = 'none';
+                    dot5.style.display = 'none';
+                    bShowDot = false;
                 }
             }
         }
     }
-    else {
-        if (bShowDot == true) {  // 檢查是否在 bShowDot 狀態
-            dot1.style.display = 'none';
-            dot2.style.display = 'none';
-            dot3.style.display = 'none';
-            dot4.style.display = 'none';
-            dot5.style.display = 'none';
-            bShowDot = false;
-        }
-    }
+    //else {
+    //    if (bShowDot == true) {  // 檢查是否在 bShowDot 狀態
+    //        dot1.style.display = 'none';
+    //        dot2.style.display = 'none';
+    //        dot3.style.display = 'none';
+    //        dot4.style.display = 'none';
+    //        dot5.style.display = 'none';
+    //        bShowDot = false;
+    //    }
+    //}
 }
 
 
