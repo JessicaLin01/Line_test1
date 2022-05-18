@@ -4,6 +4,8 @@ var unif = $(".uniformget");
 var content = $(".content");
 var choice = $(".choice");
 var dot = $(".flex-dot");
+
+var dt = 0;
 var speedplus = 3;
 
 var isPhone = detectmob();
@@ -17,8 +19,7 @@ var leftchoice = $("#correct");
 var story = document.querySelector("#main");
 var over = document.querySelector("#end");
 var uniformgetadd = document.querySelector("#uniform");
-//var correct = document.querySelector(".correct");
-//var correct = document.querySelector("#correct");
+var correct = document.querySelector(".correct");
 // var wrong = document.querySelector(".wrong");
 var one = document.getElementById('dot1');
 var two = document.getElementById('dot2');
@@ -74,11 +75,15 @@ function Init(){
     main.css("top",0);
     end.css("top",0);
     leftchoice.css("display","none");
+    dt = 0;
     leftchoice.css("left","0px");
+
 }
 
 function nextStory(){
     document.location.href="ch01_11_2.html";
+
+    
 }
 
 
@@ -86,6 +91,7 @@ function gameOver(){
     choose = null;
     mouse = false;
     startX = startY = endX = endY = 0;
+
     comic.css("display","none");
     error.css("display","block");
     unif.css("display","none");
@@ -96,8 +102,9 @@ function gameOver(){
     dot5.style.display = 'none';
     main.css("top",0);
     leftchoice.css("display","none");
-}
 
+
+}
 function uniform(){
     choose = null;
     mouse = false;
@@ -112,6 +119,8 @@ function uniform(){
     dot5.style.display = 'none';
     main.css("top",0);
     leftchoice.css("display","none");
+
+  
 }
 
 //電腦指令
@@ -125,14 +134,16 @@ function mouseRead(){
             //主軸故事
             case 'story':
                 var pos = main.offset();
+                // endX = event.screenX;
                 endY = event.screenY;
-                var distanceY = (endY - startY);
-                if(mouse && startY != Math.abs(distanceY) && event.buttons == 1 ){
-                    if(distanceY < 0){
-                        if(main.position().top + distanceY > (-main.height() + $(window).height())){
-                            main.offset({top:pos.top + distanceY-speedplus});
+                // var distanceX = (endX - startX);
+                var disranceY = (endY - startY);
+                if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
+                    if(disranceY < 0){
+                        if(main.position().top + disranceY > (-main.height() + $(window).height())){
+                            main.offset({top:pos.top + disranceY-speedplus});
                         }
-                        if(main.position().top + distanceY < (-main.height() + $(window).height())){
+                        if(main.position().top + disranceY < (-main.height() + $(window).height())){
                             $(".correct").fadeIn();
                             // $(".wrong").fadeIn();
                         }
@@ -141,11 +152,11 @@ function mouseRead(){
                             // $(".wrong").fadeOut();
                         }
                     }
-                    else if(distanceY > 0){
-                        if(main.position().top + distanceY < 0){
-                            main.offset({top:pos.top + distanceY+speedplus});
+                    else if(disranceY > 0){
+                        if(main.position().top + disranceY < 0){
+                            main.offset({top:pos.top + disranceY+speedplus});
                         }
-                        if(main.position().top + distanceY < 0){
+                        if(main.position().top + disranceY < 0){
                             $(".correct").fadeOut();
                             // $(".wrong").fadeOut();
                         }
@@ -153,14 +164,108 @@ function mouseRead(){
                     startY = endY;
                 }
                 break;
+
+            //錯誤故事
+            case 'gameover':
+                var pos = end.offset();
+                // endX = event.screenX;
+                endY = event.screenY;
+                // var distanceX = (endX - startX);
+                var disranceY = (endY - startY);
+                if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
+                    if(disranceY < 0){
+                        end.offset({top:pos.top + disranceY-speedplus});
+                        if(end.position().top + disranceY < (-end.height() + $(window).height())){
+                            var dot = $(window).height()/25;
+                            
+                        }
+                        if(end.position().top + disranceY < (-end.height() + $(window).height()) - $(window).height()/5){
+                            console.log(dt);
+                            dt++;
+                            if(dt == 1){
+                                dot1.style.display = 'block';
+                            }
+                            if(dt == 3){
+                                dot2.style.display = 'block';
+                            }
+                            if(dt == 5){
+                                dot3.style.display = 'block';
+                            }
+                            if(dt == 7){
+                                dot4.style.display = 'block';
+                            }
+                            if(dt == 9){
+                                dot5.style.display = 'block';
+                            }
+                            if(dt == 10){
+                                nextStory();
+                            }
+                            
+                        }
+                    }
+                    else if(disranceY > 0){
+                        if(end.position().top + disranceY < 0){
+                            end.offset({top:pos.top + disranceY+speedplus});
+                        }
+                    }
+                    startY = endY;
+                }
+                break;
+
+
+                case 'uniform':
+                    var pos = uniformget.offset();
+                    // endX = event.screenX;
+                    endY = event.screenY;
+                    // var distanceX = (endX - startX);
+                    var disranceY = (endY - startY);
+                    if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
+                        if(disranceY < 0){
+                            uniformget.offset({top:pos.top + disranceY-speedplus});
+                            if(uniformget.position().top + disranceY < (-uniformget.height() + $(window).height())){
+                                var dot = $(window).height()/25;
+                                
+                            }
+                            if(uniformget.position().top + disranceY < (-uniformget.height() + $(window).height()) - $(window).height()/5){
+                                console.log(dt);
+                                dt++;
+                                if(dt == 1){
+                                    dot1.style.display = 'block';
+                                }
+                                if(dt == 3){
+                                    dot2.style.display = 'block';
+                                }
+                                if(dt == 5){
+                                    dot3.style.display = 'block';
+                                }
+                                if(dt == 7){
+                                    dot4.style.display = 'block';
+                                }
+                                if(dt == 9){
+                                    dot5.style.display = 'block';
+                                }
+                                if(dt == 10){
+                                    nextStory();
+                                }
+                                
+                            }
+                        }
+                        else if(disranceY > 0){
+                            if(uniformget.position().top + disranceY < 0){
+                                uniformget.offset({top:pos.top + disranceY+speedplus});
+                            }
+                        }
+                        startY = endY;
+                    }
+                    break;
+            
                 //正確答案
-            case 'correctanswer':
-                console.log(choose);
+                case 'correctanswer':
                     var pos = leftchoice.offset();
                     endX = event.screenX;
                     // endY = event.screenY;
                     var distanceX = (endX - startX);
-                    // var distanceY = (endY - startY);
+                    // var disranceY = (endY - startY);
                     if(mouse && startX != Math.abs(distanceX) && event.buttons == 1){
                         if(distanceX < 0){
                             leftchoice.offset({left:pos.left+distanceX/cspeed});
@@ -188,7 +293,39 @@ function mouseRead(){
         choose = null;
         mouse = false;
         startX = startY = endX = endY = 0;
-    }, false);
+        switch(choose){
+            //主軸故事
+            case 'story':
+                choose = null;
+                mouse = false;
+                startX = startY = endX = endY = 0;
+                break;
+
+            //錯誤故事
+            case 'gameover':
+                choose = null;
+                mouse = false;
+                startX = startY = endX = endY = 0;
+                break;
+
+            
+            //
+            case 'uniform':
+                choose = null;
+                mouse = false;
+                startX = startY = endX = endY = 0;
+                break;    
+            
+            //正確答案
+            case 'correctanswer':
+                choose = null;
+                mouse = false;
+                startX = startY = endX = endY = 0;
+                break;
+
+            
+        }
+    },false);
 
     story.addEventListener('mousedown',function(event){
         // event.preventDefault();
@@ -198,21 +335,22 @@ function mouseRead(){
         choose = 'story';
     }, false);
 
-    //over.addEventListener('mousedown',function(event){
-    //    // event.preventDefault();
-    //    mouse = true;
-    //    startX = event.screenX;
-    //    startY = event.screenY;
-    //    choose = 'gameover';
-    //}, false);
+    over.addEventListener('mousedown',function(event){
+        // event.preventDefault();
+        mouse = true;
+        startX = event.screenX;
+        startY = event.screenY;
+        choose = 'gameover';
+    }, false);
 
-    //uniformgetadd.addEventListener('mousedown',function(event){
-    //    // event.preventDefault();
-    //    mouse = true;
-    //    startX = event.screenX;
-    //    startY = event.screenY;
-    //    choose = 'uniform';
-    //}, false);
+
+    uniformgetadd.addEventListener('mousedown',function(event){
+        // event.preventDefault();
+        mouse = true;
+        startX = event.screenX;
+        startY = event.screenY;
+        choose = 'uniform';
+    }, false);
 
     correct.addEventListener('mousedown',function(event){
         // event.preventDefault();
@@ -240,13 +378,13 @@ function touchRead(){
                 // endX = touch.screenX;
                 endY = touch.screenY;
                 // var distanceX = (endX - startX);
-                var distanceY = (endY - startY);
-                if(startY != Math.abs(distanceY)){
-                    if(distanceY < 0){
-                        if(main.position().top + distanceY > (-main.height() + $(window).height())){
-                            main.offset({top:pos.top + distanceY-speedplus});
+                var disranceY = (endY - startY);
+                if(startY != Math.abs(disranceY)){
+                    if(disranceY < 0){
+                        if(main.position().top + disranceY > (-main.height() + $(window).height())){
+                            main.offset({top:pos.top + disranceY-speedplus});
                         }
-                        if(main.position().top + distanceY < (-main.height() + $(window).height())){
+                        if(main.position().top + disranceY < (-main.height() + $(window).height())){
                             $(".correct").fadeIn();
                             // $(".wrong").fadeIn();
                         }
@@ -255,11 +393,11 @@ function touchRead(){
                             // $(".wrong").fadeOut();
                         }
                     }
-                    else if(distanceY > 0){
-                        if(main.position().top + distanceY < 0){
-                            main.offset({top:pos.top + distanceY+speedplus});
+                    else if(disranceY > 0){
+                        if(main.position().top + disranceY < 0){
+                            main.offset({top:pos.top + disranceY+speedplus});
                         }
-                        if(main.position().top + distanceY < 0){
+                        if(main.position().top + disranceY < 0){
                             $(".correct").fadeOut();
                             // $(".wrong").fadeOut();
                         }
@@ -274,11 +412,11 @@ function touchRead(){
                 // endX = touch.screenX;
                 endY = touch.screenY;
                 // var distanceX = (endX - startX);
-                var distanceY = (endY - startY);
-                if(startY != Math.abs(distanceY)){
-                    if(distanceY < 0){
-                        end.offset({top:pos.top + distanceY-speedplus});
-                        if(end.position().top + distanceY < (-end.height() + $(window).height()) - $(window).height()/5){
+                var disranceY = (endY - startY);
+                if(startY != Math.abs(disranceY)){
+                    if(disranceY < 0){
+                        end.offset({top:pos.top + disranceY-speedplus});
+                        if(end.position().top + disranceY < (-end.height() + $(window).height()) - $(window).height()/5){
                             console.log(dt);
                             dt++;
                             if(dt == 1){
@@ -301,9 +439,9 @@ function touchRead(){
                             }
                         }
                     }
-                    else if(distanceY > 0){
-                        if(end.position().top + distanceY < 0){
-                            end.offset({top:pos.top + distanceY+speedplus});
+                    else if(disranceY > 0){
+                        if(end.position().top + disranceY < 0){
+                            end.offset({top:pos.top + disranceY+speedplus});
                         }
                     }
                     startY = endY;
@@ -316,15 +454,15 @@ function touchRead(){
                     // endX = event.screenX;
                     endY = event.screenY;
                     // var distanceX = (endX - startX);
-                    var distanceY = (endY - startY);
-                    if( mouse && startY != Math.abs(distanceY) && event.buttons == 1 ){
-                        if(distanceY < 0){
-                            uniformget.offset({ top: pos.top + distanceY - speedplus });
+                    var disranceY = (endY - startY);
+                    if( mouse && startY != Math.abs(disranceY) && event.buttons == 1 ){
+                        if(disranceY < 0){
+                            uniformget.offset({ top: pos.top + disranceY - speedplus });
                             console.log("uniform");
-                            if(uniformget.position().top + distanceY < (-uniformget.height() + $(window).height())){
+                            if(uniformget.position().top + disranceY < (-uniformget.height() + $(window).height())){
                                 var dot = $(window).height()/25;
                             }
-                            if(uniformget.position().top + distanceY < (-uniformget.height() + $(window).height()) - $(window).height()/5){
+                            if(uniformget.position().top + disranceY < (-uniformget.height() + $(window).height()) - $(window).height()/5){
                                 console.log(dt);
                                 dt++;
                                 if(dt == 1){
@@ -348,9 +486,9 @@ function touchRead(){
                                 
                             }
                         }
-                        else if(distanceY > 0){
-                            if(uniformget.position().top + distanceY < 0){
-                                uniformget.offset({top:pos.top + distanceY+speedplus});
+                        else if(disranceY > 0){
+                            if(uniformget.position().top + disranceY < 0){
+                                uniformget.offset({top:pos.top + disranceY+speedplus});
                             }
                         }
                         startY = endY;
@@ -362,7 +500,7 @@ function touchRead(){
                     endX = touch.screenX;
                     // endY = touch.screenY;
                     var distanceX = (endX - startX);
-                    // var distanceY = (endY - startY);
+                    // var disranceY = (endY - startY);
                     if(startX != Math.abs(distanceX)){
                         if(distanceX < 0){
                             leftchoice.offset({left:pos.left+distanceX/cspeed});
@@ -425,6 +563,23 @@ function touchRead(){
         startX = touch.screenX;
         startY = touch.screenY;
         choose = 'story';
+    }, false);
+
+    over.addEventListener('touchstart',function(event){
+        // event.preventDefault();
+        var touch = event.targetTouches[0];
+        startX = touch.screenX;
+        startY = touch.screenY;
+        choose = 'gameover';
+    }, false);
+
+
+    uniformgetadd.addEventListener('touchstart',function(event){
+        // event.preventDefault();
+        var touch = event.targetTouches[0];
+        startX = touch.screenX;
+        startY = touch.screenY;
+        choose = 'gameover';
     }, false);
 
     correct.addEventListener('touchstart',function(event){
