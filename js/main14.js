@@ -331,16 +331,16 @@ function scrollingDown(distY) { // 處理頁面往下滑動，手指或滑鼠左
             }
         }
     }
-    //else {
-    //    if (bShowDot == true) {  // 檢查是否在 bShowDot 狀態
-    //        dot1.style.display = 'none';
-    //        dot2.style.display = 'none';
-    //        dot3.style.display = 'none';
-    //        dot4.style.display = 'none';
-    //        dot5.style.display = 'none';
-    //        bShowDot = false;
-    //    }
-    //}
+    else {
+        if (bShowDot == true) {  // 檢查是否在 bShowDot 狀態
+            dot1.style.display = 'none';
+            dot2.style.display = 'none';
+            dot3.style.display = 'none';
+            dot4.style.display = 'none';
+            dot5.style.display = 'none';
+            bShowDot = false;
+        }
+    }
 }
 
 
