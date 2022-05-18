@@ -396,15 +396,18 @@ function autuScrolling(dTime) {
     else { // 自動捲動
         var cosValue = Math.cos(halfPI * ElapsedTime / ScrollingTime);
         var distY = ScrollingDir * cosValue * cosValue * cosValue * ScrollingDist; // 以 5 像素為單位
-        //console.log(distY);
+        //console.log("DY",distY);
         if (ScrollingDir == -1) {
             if (main.position().top + distY > (-main.height() + $(window).height())) {
-                main.offset({ top: pos.top + distY });
+                main.offset({ top: pos.top + distY });  // 網頁往上
+                scrollingUp(distY);
             }
         }
         else {
             if (main.position().top + distY < 0) {
-                main.offset({ top: pos.top + distY });
+                main.offset({ top: pos.top + distY }); // 網頁往下
+                console.log("DY", distY);
+                scrollingDown(distY);
             }
         }
     }
