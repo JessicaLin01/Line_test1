@@ -273,7 +273,7 @@ function touchRead(){
 
 function scrollingUp(distY) { // 處理頁面往上滑動，手指或滑鼠左鍵按住由下往上滑動螢幕
     // ----------  修正 dot 顯示的問題
-    displayDotStep = $(window).height() / (2 * 6); // 分成六等份
+    displayDotStep = $(window).height() / (6); // 分成六等份
     console.log(displayDotStep);
     displayDotStart = (-main.height() + $(window).height()); //- $(window).height() /2;
     curBottomPos = main.position().top + distY;
@@ -298,7 +298,7 @@ function scrollingUp(distY) { // 處理頁面往上滑動，手指或滑鼠左�
 }
 
 function scrollingDown(distY) { // 處理頁面往下滑動，手指或滑鼠左鍵按住由上往下滑動螢幕
-    displayDotStep = $(window).height() / (2 * 6); // 分成六等份
+    displayDotStep = $(window).height() / (6); // 分成六等份
     //console.log(displayDotStep);
     displayDotStart = (-main.height() + $(window).height()); // - $(window).height() / 5;
     curBottomPos = main.position().top + distY;
