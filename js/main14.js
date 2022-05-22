@@ -48,6 +48,7 @@ mouseRead();
 touchRead();
 Getdot();
 
+//   console.log( ); // 輸出訊息
 //設定寬度
 function getWidth(event){
     var scaleimg = $(window).width()/148;  //148為原先選項的圖片寬度
@@ -139,9 +140,7 @@ function mouseRead(){
             //主軸故事
             case 'story':
                 var pos = main.offset();
-                // endX = event.screenX;
                 endY = event.screenY;
-                // var distanceX = (endX - startX);
                 var distanceY = (endY - startY);
                 if (mouse && startY != Math.abs(distanceY) && event.buttons == 1) {
                     if (distanceY < 0) {
@@ -272,27 +271,18 @@ function touchRead(){
 }
 
 function scrollingUp(distY) { // 處理頁面往上滑動，手指或滑鼠左鍵按住由下往上滑動螢幕
-    // ----------  修正 dot 顯示的問題
-    displayDotStep = $(window).height() / (2 * 6); // 分成六等份
- //   console.log(displayDotStep);
+    displayDotStep = $(window).height() / (2 * 6); // 將視窗高度分成12等份，每往上一等份出現一隻章魚
     displayDotStart = (-main.height() + $(window).height()); //- $(window).height() /2;
     curBottomPos = main.position().top + distY;
-    //console.log("ddStart", displayDotStart);
 
     if (curBottomPos < displayDotStart) {
-        //console.log(curBottomPos);
         // 根據 main.position().top + distanceY 所在的位置，設定不同 dot 的顯示狀態
         bShowDot = true; // 顯示 dot
-        console.log("diff", displayDotStart - curBottomPos);
-        console.log("t   ", (displayDotStart - curBottomPos) / displayDotStep);
         var t = Math.floor((displayDotStart - curBottomPos) / displayDotStep);
-        console.log("Ceil t ", t);
-        console.log("numDotOn ", numDotOn);
         if (numDotOn != t) // 只要目前顯示的跟所在位置應顯示的 dot 數目不同就更新
         {
             if (t != 6) {
                 displayDots(t); numDotOn = t;
-                console.log("In===============");
             }
             else {  // 轉換到下一章
                 nextStory();
@@ -303,15 +293,14 @@ function scrollingUp(distY) { // 處理頁面往上滑動，手指或滑鼠左�
 }
 
 function scrollingDown(distY) { // 處理頁面往下滑動，手指或滑鼠左鍵按住由上往下滑動螢幕
-    displayDotStep = $(window).height() / (2*6); // 分成六等份
-    //console.log(displayDotStep);
-    displayDotStart = (-main.height() + $(window).height()); // - $(window).height() / 5;
+    displayDotStep = $(window).height() / (2 * 6); // 將視窗高度分成12等份，每往上一等份出現一隻章魚
+    displayDotStart = (-main.height() + $(window).height()); //- $(window).height() /2;
     curBottomPos = main.position().top + distY;
 
     if (curBottomPos < displayDotStart) {
          // 根據 main.position().top + distanceY 所在的位置，設定不同 dot 的顯示狀態
          // 進入 dot 顯示狀態
-         bShowDot = true;
+        bShowDot = true;
         var t = Math.floor((displayDotStart - curBottomPos) / displayDotStep);
         if (numDotOn > 0) // 代表目前 Dot 顯示不足，操作者往下捲動
         {
@@ -396,18 +385,16 @@ function autuScrolling(dTime) {
     else { // 自動捲動
         var cosValue = Math.cos(halfPI * ElapsedTime / ScrollingTime);
         var distY = ScrollingDir * cosValue * cosValue * cosValue * ScrollingDist; // 以 5 像素為單位
-        //console.log("DY",distY);
         if (ScrollingDir == -1) {
             if (main.position().top + distY > (-main.height() + $(window).height())) {
                 main.offset({ top: pos.top + distY });  // 網頁往上
-                scrollingUp(distY);
+                scrollingUp(distY);  // 處理章魚的顯示
             }
         }
         else {
             if (main.position().top + distY < 0) {
                 main.offset({ top: pos.top + distY }); // 網頁往下
-                console.log("DY", distY);
-                scrollingDown(distY);
+                scrollingDown(distY); // 處理章魚的顯示
             }
         }
     }

@@ -16,15 +16,32 @@ var leftchoice = $("#correct");
 // var rightchoice = $("#wrong");
 var story = document.querySelector("#main");
 var over = document.querySelector("#end");
-var uniformgetadd = document.querySelector("#uniform");
+//var uniformgetadd = document.querySelector("#uniform");
 //var correct = document.querySelector(".correct");
 //var correct = document.querySelector("#correct");
 // var wrong = document.querySelector(".wrong");
-var one = document.getElementById('dot1');
-var two = document.getElementById('dot2');
-var three = document.getElementById('dot3');
-var four = document.getElementById('dot4');
-var five = document.getElementById('dot5');
+// 以下為用到, 晚點移除
+//var one = document.getElementById('dot1');
+//var two = document.getElementById('dot2');
+//var three = document.getElementById('dot3');
+//var four = document.getElementById('dot4');
+//var five = document.getElementById('dot5');
+
+// 以下變數用於畫面自動捲動
+var bAutoScrolling = false;
+var ScrollingTime = 0; // 自動捲動的時間
+var ScrollingID = 0;
+var ElapsedTime = 0; // 自動捲動經過的時間   
+var curDistance = 0; // 只要記錄 Y 軸移動的前一個位置
+var ScrollingDir = -1; // 正往上，負往下
+var halfPI = 1.5707963; // PI/2
+var ScrollingDist = 30;  // 自動移動的單位時間的移動單位 30 Pixels
+var MaxScrollingTime = 30;  // 自動捲動的最大秒數：單位是 3秒 * 1000(毫秒)/ 100(移動距離 100 pixels 為 1)
+var MovingThreshold = 5;  // 最後一次滑動最大啟動自動捲動的像素值
+//---------------------------
+//給左右選取顯示時的狀態變數，這個 js 作為左右滑動選擇的參考程式檔依據
+var bOnChoose = false;
+//---------------------------
 
 getWidth();
 mouseRead();
@@ -118,9 +135,16 @@ function uniform(){
 function mouseRead(){
     window.addEventListener('mousedown',function(event){
         event.preventDefault(); //防止預設觸控事件
+        //----------- 自動捲動
+        if (bAutoScrolling == true) { // 當手碰到螢幕時，如果再自動捲動狀態則結束自動捲動
+            clearInterval(ScrollingID);
+            ElapsedTime = 0;
+            bAutoScrolling = false;
+        }
+        //----------- 自動捲動
     }, {passive: false});
 
-    window.addEventListener('mousemove',function(event){
+    window.addEventListener('mousemove', function (event) {
         switch(choose){
             //主軸故事
             case 'story':
@@ -128,59 +152,56 @@ function mouseRead(){
                 endY = event.screenY;
                 var distanceY = (endY - startY);
                 if(mouse && startY != Math.abs(distanceY) && event.buttons == 1 ){
-                    if(distanceY < 0){
-                        if(main.position().top + distanceY > (-main.height() + $(window).height())){
-                            main.offset({top:pos.top + distanceY-speedplus});
+                    if(distanceY < 0){  // 頁面捲動到往下
+                        if (main.position().top + distanceY > (-main.height() + $(window).height())) {
+                            // -main.height() + $(window).height() 為圖片最底部為 負值
+                            // 未到達最底部前，持續讓圖片往上
+                            main.offset({ top: pos.top + distanceY - speedplus });
                         }
-                        if(main.position().top + distanceY < (-main.height() + $(window).height())){
+                        else { // if (main.position().top + distanceY <= (-main.height() + $(window).height()))                     
+                            // 達最最底部，顯示選項
+                            bOnChoose = true;
                             $(".correct").fadeIn();
-                            // $(".wrong").fadeIn();
-                        }
-                        else{
-                            $(".correct").fadeOut();
-                            // $(".wrong").fadeOut();
                         }
                     }
                     else if(distanceY > 0){
-                        if(main.position().top + distanceY < 0){
-                            main.offset({top:pos.top + distanceY+speedplus});
-                        }
-                        if(main.position().top + distanceY < 0){
-                            $(".correct").fadeOut();
-                            // $(".wrong").fadeOut();
+                        if(main.position().top + distanceY < 0) {
+                            main.offset({ top: pos.top + distanceY + speedplus });
+                            if (bOnChoose == true) {
+                                $(".correct").fadeOut();
+                                bOnChoose = false;
+                            }
                         }
                     }
                     startY = endY;
+                    curDistance = distanceY;  // ----------- 自動捲動，紀錄這次的移動距離為
                 }
                 break;
                 //正確答案
             case 'correctanswer':
-                console.log(choose);
-                    var pos = leftchoice.offset();
-                    endX = event.screenX;
-                    // endY = event.screenY;
-                    var distanceX = (endX - startX);
-                    // var distanceY = (endY - startY);
-                    if(mouse && startX != Math.abs(distanceX) && event.buttons == 1){
-                        if(distanceX < 0){
-                            leftchoice.offset({left:pos.left+distanceX/cspeed});
-                            if(leftchoice.position().left + distanceX / cspeed < -leftchoice.width() / 2){
-                                // leftchoice.offset({left:pos.left+distanceX/cspeed});
-                                // leftchoice.fadeOut();
-                                nextStory();
-                            }
+                var pos = leftchoice.offset();
+                endX = event.screenX;
+                // endY = event.screenY;
+                var distanceX = (endX - startX);
+                // var distanceY = (endY - startY);
+                if(mouse && startX != Math.abs(distanceX) && event.buttons == 1){
+                    if(distanceX < 0){
+                        leftchoice.offset({left:pos.left+distanceX/cspeed});
+                        if(leftchoice.position().left + distanceX / cspeed < -leftchoice.width() / 2){
+                            // leftchoice.offset({left:pos.left+distanceX/cspeed});
+                            // leftchoice.fadeOut();
+                            nextStory();
                         }
-                        if(distanceX > 0){
-                            leftchoice.offset({left:pos.left + distanceX / cspeed});
-                            if(leftchoice.position().left + distanceX / cspeed > leftchoice.width() / 2){
-                                nextStory();
-                            }
-                        }
-                        startX = endX;
                     }
-                    break;
-
-            
+                    if(distanceX > 0){
+                        leftchoice.offset({left:pos.left + distanceX / cspeed});
+                        if(leftchoice.position().left + distanceX / cspeed > leftchoice.width() / 2){
+                            nextStory();
+                        }
+                    }
+                    startX = endX;
+                }
+                break;
         }
     });
 
@@ -188,31 +209,32 @@ function mouseRead(){
         choose = null;
         mouse = false;
         startX = startY = endX = endY = 0;
+        // ----------- 自動捲動
+        // 當手指離開時，將目前的移動距離，當成最後一次的移動距離
+        // 根據正負方向與移動距離，計算自動撥放的時間長度
+        // 負數往下，正數往上
+        // 透過在指定的時間內呼叫 autoscrolling 函式，來實現自動滑動
+        // 以 cos(時間) 值作為自動滑動的移動距離 
+        //  
+        var distance = Math.abs(curDistance);
+        //console.log("tu:distance", distance);
+        if (distance >= MovingThreshold) { // 移動超過 MovingThreshold 才自動捲動
+            if (curDistance < 0) ScrollingDir = -1;
+            else ScrollingDir = 1;
+            bAutoScrolling = true;
+            ScrollingTime = MaxScrollingTime * distance;
+            ScrollingID = setInterval(autuScrolling, 16.66667, 16.66667);
+        }
+        // ----------- 自動捲動
     }, false);
 
-    story.addEventListener('mousedown',function(event){
+    story.addEventListener('mousedown', function (event) {
         // event.preventDefault();
         mouse = true;
         startX = event.screenX;
         startY = event.screenY;
         choose = 'story';
     }, false);
-
-    //over.addEventListener('mousedown',function(event){
-    //    // event.preventDefault();
-    //    mouse = true;
-    //    startX = event.screenX;
-    //    startY = event.screenY;
-    //    choose = 'gameover';
-    //}, false);
-
-    //uniformgetadd.addEventListener('mousedown',function(event){
-    //    // event.preventDefault();
-    //    mouse = true;
-    //    startX = event.screenX;
-    //    startY = event.screenY;
-    //    choose = 'uniform';
-    //}, false);
 
     correct.addEventListener('mousedown',function(event){
         // event.preventDefault();
@@ -229,9 +251,16 @@ function mouseRead(){
 function touchRead(){
     window.addEventListener('touchmove',function(event){
         event.preventDefault(); //防止預設觸控事件
+        //----------- 自動捲動
+        if (bAutoScrolling == true) { // 當手碰到螢幕時，如果再自動捲動狀態則結束自動捲動
+            clearInterval(ScrollingID);
+            ElapsedTime = 0;
+            bAutoScrolling = false;
+        }
+        //----------- 自動捲動
     }, {passive: false});
 
-    window.addEventListener('touchmove',function(event){
+    window.addEventListener('touchmove', function (event) {
         var touch = event.targetTouches[0];
         switch(choose){
             //主軸故事
@@ -246,173 +275,81 @@ function touchRead(){
                         if(main.position().top + distanceY > (-main.height() + $(window).height())){
                             main.offset({top:pos.top + distanceY-speedplus});
                         }
-                        if(main.position().top + distanceY < (-main.height() + $(window).height())){
+                        else { // if (main.position().top + distanceY <= (-main.height() + $(window).height()))                     
+                            // 達最最底部，顯示選項
+                            bOnChoose = true;
                             $(".correct").fadeIn();
-                            // $(".wrong").fadeIn();
-                        }
-                        else{
-                            $(".correct").fadeOut();
-                            // $(".wrong").fadeOut();
                         }
                     }
-                    else if(distanceY > 0){
-                        if(main.position().top + distanceY < 0){
-                            main.offset({top:pos.top + distanceY+speedplus});
-                        }
-                        if(main.position().top + distanceY < 0){
-                            $(".correct").fadeOut();
-                            // $(".wrong").fadeOut();
+                    else if (distanceY > 0) {
+                        if (main.position().top + distanceY < 0) {
+                            main.offset({ top: pos.top + distanceY + speedplus });
+                            if (bOnChoose == true) {
+                                $(".correct").fadeOut();
+                                bOnChoose = false;
+                            }
                         }
                     }
                     startY = endY;
+                    curDistance = distanceY;  // ----------- 自動捲動，紀錄這次的移動距離為
                 }
-                break;
-
-            //錯誤故事
-            case 'gameover':
-                var pos = end.offset();
-                // endX = touch.screenX;
-                endY = touch.screenY;
-                // var distanceX = (endX - startX);
-                var distanceY = (endY - startY);
-                if(startY != Math.abs(distanceY)){
-                    if(distanceY < 0){
-                        end.offset({top:pos.top + distanceY-speedplus});
-                        if(end.position().top + distanceY < (-end.height() + $(window).height()) - $(window).height()/5){
-                            console.log(dt);
-                            dt++;
-                            if(dt == 1){
-                                dot1.style.display = 'block';
-                            }
-                            if(dt == 3){
-                                dot2.style.display = 'block';
-                            }
-                            if(dt == 5){
-                                dot3.style.display = 'block';
-                            }
-                            if(dt == 7){
-                                dot4.style.display = 'block';
-                            }
-                            if(dt == 9){
-                                dot5.style.display = 'block';
-                            }
-                            if(dt == 10){
-                                nextStory();
-                            }
-                        }
-                    }
-                    else if(distanceY > 0){
-                        if(end.position().top + distanceY < 0){
-                            end.offset({top:pos.top + distanceY+speedplus});
-                        }
-                    }
-                    startY = endY;
-                }
-                break;
-            
-
-                case 'uniform':
-                    var pos = uniformget.offset();
-                    // endX = event.screenX;
-                    endY = event.screenY;
-                    // var distanceX = (endX - startX);
-                    var distanceY = (endY - startY);
-                    if( mouse && startY != Math.abs(distanceY) && event.buttons == 1 ){
-                        if(distanceY < 0){
-                            uniformget.offset({ top: pos.top + distanceY - speedplus });
-                            console.log("uniform");
-                            if(uniformget.position().top + distanceY < (-uniformget.height() + $(window).height())){
-                                var dot = $(window).height()/25;
-                            }
-                            if(uniformget.position().top + distanceY < (-uniformget.height() + $(window).height()) - $(window).height()/5){
-                                console.log(dt);
-                                dt++;
-                                if(dt == 1){
-                                    dot1.style.display = 'block';
-                                }
-                                if(dt == 3){
-                                    dot2.style.display = 'block';
-                                }
-                                if(dt == 5){
-                                    dot3.style.display = 'block';
-                                }
-                                if(dt == 7){
-                                    dot4.style.display = 'block';
-                                }
-                                if(dt == 9){
-                                    dot5.style.display = 'block';
-                                }
-                                if(dt == 10){
-                                    nextStory();
-                                }
-                                
-                            }
-                        }
-                        else if(distanceY > 0){
-                            if(uniformget.position().top + distanceY < 0){
-                                uniformget.offset({top:pos.top + distanceY+speedplus});
-                            }
-                        }
-                        startY = endY;
-                    }
-                    break;
+            break;
                 //正確答案
-                case 'correctanswer':
-                    var pos = leftchoice.offset();
-                    endX = touch.screenX;
-                    // endY = touch.screenY;
-                    var distanceX = (endX - startX);
-                    // var distanceY = (endY - startY);
-                    if(startX != Math.abs(distanceX)){
-                        if(distanceX < 0){
-                            leftchoice.offset({left:pos.left+distanceX/cspeed});
-                            if(leftchoice.position().left + distanceX / cspeed < -leftchoice.width() / 2){
-                                // leftchoice.offset({left:pos.left+distanceX/cspeed});
-                                // leftchoice.fadeOut();
-                                nextStory();
-                            }
+            case 'correctanswer':
+                var pos = leftchoice.offset();
+                endX = touch.screenX;
+                // endY = touch.screenY;
+                var distanceX = (endX - startX);
+                // var distanceY = (endY - startY);
+                if(startX != Math.abs(distanceX)){
+                    if(distanceX < 0){
+                        leftchoice.offset({left:pos.left+distanceX/cspeed});
+                        if(leftchoice.position().left + distanceX / cspeed < -leftchoice.width() / 2){
+                            // leftchoice.offset({left:pos.left+distanceX/cspeed});
+                            // leftchoice.fadeOut();
+                            nextStory();
                         }
-                        if(distanceX > 0){
-                            // if(leftchoice.position().left + distanceX / cspeed < 0)
-                            //     leftchoice.offset({left:pos.left+distanceX/cspeed});
-                            leftchoice.offset({left:pos.left + distanceX / cspeed});
-                            if(leftchoice.position().left + distanceX / cspeed > leftchoice.width() / 2){
-                                nextStory();
-                            }
-                        }
-                        startX = endX;
                     }
-                    break;
-
-            
+                    if(distanceX > 0){
+                        // if(leftchoice.position().left + distanceX / cspeed < 0)
+                        //     leftchoice.offset({left:pos.left+distanceX/cspeed});
+                        leftchoice.offset({left:pos.left + distanceX / cspeed});
+                        if(leftchoice.position().left + distanceX / cspeed > leftchoice.width() / 2){
+                            nextStory();
+                        }
+                    }
+                    startX = endX;
+                }
+            break;
         }
     });
 
-    window.addEventListener('touchend',function(event){
+    window.addEventListener('touchend', function (event) {
+        console.log("td:choose", choose);
         switch(choose){
             //主軸故事
             case 'story':
                 choose = null;
                 startX = startY = endX = endY = 0;
+                // ----------- 自動捲動
+                // 當手指離開時，將目前的移動距離，當成最後一次的移動距離
+                // 根據正負方向與移動距離，計算自動撥放的時間長度
+                // 負數往下，正數往上
+                // 透過在指定的時間內呼叫 autoscrolling 函式，來實現自動滑動
+                // 以 cos(時間) 值作為自動滑動的移動距離 
+                //  
+                var distance = Math.abs(curDistance);
+                if (distance >= MovingThreshold) { // 移動超過三個 pixel 才自動捲動
+                    if (curDistance < 0) ScrollingDir = -1;
+                    else ScrollingDir = 1;
+                    bAutoScrolling = true;
+                    ScrollingTime = MaxScrollingTime * distance; // 1.5 (sec) * 1000 *  distance / 100;
+                    ScrollingID = setInterval(autuScrolling, 16.66667, 16.66667);
+                }
+                // ----------- 自動捲動
                 break;
-            //錯誤故事
-            case 'gameover':
-                choose = null;
-                startX = startY = endX = endY = 0;
-                break;
-            case 'uniform':
-                choose = null;
-                mouse = false;
-                startX = startY = endX = endY = 0;
-                break; 
             //正確答案
             case 'correctanswer':
-                choose = null;
-                startX = startY = endX = endY = 0;
-                break;
-
-            //錯誤答案
-            case 'wronganswer':
                 choose = null;
                 startX = startY = endX = endY = 0;
                 break;
@@ -437,10 +374,11 @@ function touchRead(){
 }
 
 
-// 自動捲動控制
+// 自動捲動控制，這是給左右選項的
 function autuScrolling(dTime) {
     var pos = main.offset();
     ElapsedTime = ElapsedTime + dTime;  // ElapsedTime 目前的總經過時間
+   // console.log(" ElapsedTime : ", ElapsedTime ); // 輸出訊息
     if (ElapsedTime >= ScrollingTime) { // 自動捲動結束
         clearInterval(ScrollingID);
         ElapsedTime = 0;
@@ -452,12 +390,23 @@ function autuScrolling(dTime) {
         //console.log(distY);
         if (ScrollingDir == -1) {
             if (main.position().top + distY > (-main.height() + $(window).height())) {
-                main.offset({ top: pos.top + distY });
+                // -main.height() + $(window).height() 為圖片最底部為 負值
+                // 未到達最底部前，持續讓圖片往上
+                main.offset({ top: pos.top + distY - speedplus });
+            }
+            else {
+                // 達最最底部，顯示選項
+                bOnChoose = true;
+                $(".correct").fadeIn();
             }
         }
         else {
             if (main.position().top + distY < 0) {
                 main.offset({ top: pos.top + distY });
+                if (bOnChoose == true) {
+                    $(".correct").fadeOut();
+                    bOnChoose = false;
+                }
             }
         }
     }

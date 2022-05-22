@@ -24,6 +24,26 @@ var over = document.querySelector("#end");
 var correct = document.querySelector(".correct");
 var wrong = document.querySelector(".wrong");
 
+// 以下變數用於畫面自動捲動
+var bAutoScrolling = false;
+var ScrollingTime = 0; // 自動捲動的時間
+var ScrollingID = 0;
+var ElapsedTime = 0; // 自動捲動經過的時間   
+var curDistance = 0; // 只要記錄 Y 軸移動的前一個位置
+var ScrollingDir = -1; // 正往上，負往下
+var halfPI = 1.5707963; // PI/2
+var ScrollingDist = 30;  // 自動移動的單位時間的移動單位 30 Pixels
+var MaxScrollingTime = 30;  // 自動捲動的最大秒數：單位是 3秒 * 1000(毫秒)/ 100(移動距離 100 pixels 為 1)
+var MovingThreshold = 5;  // 最後一次滑動最大啟動自動捲動的像素值
+//---------------------------
+// 修正最後出現點點點的 BUG
+var bShowDot = false;
+var displayDotStep = 0;
+var displayDotStart = 0;
+var curBottomPos = 0;
+var numDotOn = 0;
+//---------------------------
+
 getWidth();
 mouseRead();
 touchRead();
