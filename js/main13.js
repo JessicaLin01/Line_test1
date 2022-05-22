@@ -211,15 +211,13 @@ function touchRead(){
             //主軸故事
             case 'story':
                 var pos = main.offset();
-                // endX = touch.screenX;
                 endY = touch.screenY;
-                // var distanceX = (endX - startX);
                 var distanceY = (endY - startY);
                 if(startY != Math.abs(distanceY)){
                     if(distanceY < 0){
-                        if(distanceY < -20){
-                            main.offset({top:pos.top + distanceY-20});
-                        }
+                        //if(distanceY < -20){
+                        //    main.offset({top:pos.top + distanceY-20});
+                        //}
                         main.offset({top:pos.top + distanceY-speedplus});
                         scrollingUp(distanceY);  // 處理頁面往上捲動時，點點烏賊的出現
                     }
@@ -272,7 +270,6 @@ function touchRead(){
 }
 
 function scrollingUp(distY) { // 處理頁面往上滑動，手指或滑鼠左鍵按住由下往上滑動螢幕
-    // ----------  修正 dot 顯示的問題
     displayDotStep = $(window).height() / (2 * 6); // 將視窗高度分成12等份，每往上一等份出現一隻章魚
     displayDotStart = (-main.height() + $(window).height()); //- $(window).height() /2;
     curBottomPos = main.position().top + distY;
@@ -386,7 +383,6 @@ function autuScrolling(dTime) {
     else { // 自動捲動
         var cosValue = Math.cos(halfPI * ElapsedTime / ScrollingTime);
         var distY = ScrollingDir * cosValue * cosValue * cosValue * ScrollingDist; // 以 5 像素為單位
-        //console.log(distY);
         if (ScrollingDir == -1) {
             if (main.position().top + distY > (-main.height() + $(window).height())) {
                 main.offset({ top: pos.top + distY });

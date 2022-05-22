@@ -222,9 +222,9 @@ function touchRead(){
                 var distanceY = (endY - startY);
                 if(startY != Math.abs(distanceY)){
                     if(distanceY < 0){
-                        if(distanceY < -20){
-                            main.offset({top:pos.top + distanceY-20});
-                        }
+                        //if(distanceY < -20){
+                        //    main.offset({top:pos.top + distanceY-20});
+                        //}
                         main.offset({top:pos.top + distanceY-speedplus});
                         scrollingUp(distanceY);  // 處理頁面往上捲動時，點點烏賊的出現
                     }
