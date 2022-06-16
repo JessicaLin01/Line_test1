@@ -186,6 +186,7 @@ function mouseRead(){
             else ScrollingDir = 1;
             bAutoScrolling = true;
             ScrollingTime = MaxScrollingTime * distance;
+            if (ScrollingTime >= 3000) ScrollingTime = 3000;
             ScrollingID = setInterval(autuScrolling, 16.66667, 16.66667);
         }
         // ----------- 自動捲動
@@ -264,7 +265,8 @@ function touchRead(){
                     if (curDistance < 0) ScrollingDir = -1;
                     else ScrollingDir = 1;
                     bAutoScrolling = true;
-                    ScrollingTime = MaxScrollingTime * distance; // 1.5 (sec) * 1000 *  distance / 100;
+                    ScrollingTime = MaxScrollingTime * distance; // 3 (sec) * 1000 *  distance / 100;
+                    if (ScrollingTime >= 3000) ScrollingTime = 3000; // 最多就是三秒
                     ScrollingID = setInterval(autuScrolling, 16.66667, 16.66667);
                 }
                 // ----------- 自動捲動

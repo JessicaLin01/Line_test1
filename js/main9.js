@@ -2,7 +2,6 @@ var comic = $(".comics");
 var error = $(".over");
 var content = $(".content");
 var dot = $(".flex-dot");
-var dt = 0;
 var speedplus = 3;
 
 var one = document.getElementById('dot1');
@@ -23,6 +22,27 @@ var story = document.querySelector("#main");
 var over = document.querySelector("#end");
 var correct = document.querySelector(".correct");
 var wrong = document.querySelector(".wrong");
+
+// 以下變數用於畫面自動捲動
+var bAutoScrolling = false;
+var ScrollingTime = 0; // 自動捲動的時間
+var ScrollingID = 0;
+var ElapsedTime = 0; // 自動捲動經過的時間   
+var curDistance = 0; // 只要記錄 Y 軸移動的前一個位置
+var ScrollingDir = -1; // 正往上，負往下
+var halfPI = 1.5707963; // PI/2
+var ScrollingDist = 30;  // 自動移動的單位時間的移動單位 30 Pixels
+var MaxScrollingTime = 30;  // 自動捲動的最大秒數：單位是 3 秒 * 1000(毫秒)/100(移動距離 100 pixels 為 1)
+var MovingThreshold = 5;  // 最後一次滑動最大啟動自動捲動的像素值
+//---------------------------
+// 修正最後出現點點點的 BUG
+var bShowDot = false;
+var displayDotStep = 0;
+var displayDotStart = 0;
+var curBottomPos = 0;
+var numDotOn = 0;
+//---------------------------
+
 
 getWidth();
 mouseRead();
@@ -86,28 +106,20 @@ function Init(){
 }
 
 function nextStory(){
-
-    document.location.href="ch01_10.html";
-    
-}
-
-function gameOver(){
-    choose = null;
-    mouse = false;
-    startX = startY = endX = endY = 0;
-    comic.css("display","none");
-    error.css("display","block");
-    main.css("top",0);
-    leftchoice.css("display","none");
-    rightchoice.css("display","none");
-    leftchoice.css("left","-0px");
-    rightchoice.css("left","1px");
+    document.location.href = "ch01_10.html";
 }
 
 //電腦指令
 function mouseRead(){
     window.addEventListener('mousedown',function(event){
         event.preventDefault(); //防止預設觸控事件
+        //----------- 自動捲動
+        if (bAutoScrolling == true) { // 當手碰到螢幕時，如果再自動捲動狀態則結束自動捲動
+            clearInterval(ScrollingID);
+            ElapsedTime = 0;
+            bAutoScrolling = false;
+        }
+        //----------- 自動捲動
     }, {passive: false});
 
     window.addEventListener('mousemove',function(event){
@@ -118,48 +130,22 @@ function mouseRead(){
                 // endX = event.screenX;
                 endY = event.screenY;
                 // var distanceX = (endX - startX);
-                var disranceY = (endY - startY);
-                if(mouse && startY != Math.abs(disranceY) && event.buttons == 1){
-                    if(disranceY < 0){
-                        main.offset({top:pos.top + disranceY-speedplus});
-                        if(main.position().top + disranceY < (-main.height() + $(window).height())){
-                            var dot = $(window).height()/25;
-                            
-                        }
-                        if(main.position().top + disranceY < (-main.height() + $(window).height()) - $(window).height()/5){
-                            console.log(dt);
-                            dt++;
-                            if(dt == 1){
-                                dot1.style.display = 'block';
-                            }
-                            if(dt == 3){
-                                dot2.style.display = 'block';
-                            }
-                            if(dt == 5){
-                                dot3.style.display = 'block';
-                            }
-                            if(dt == 7){
-                                dot4.style.display = 'block';
-                            }
-                            if(dt == 9){
-                                dot5.style.display = 'block';
-                            }
-                            if(dt == 10){
-                                nextStory();
-                            }
-                            
-                        }
+                var distanceY = (endY - startY);
+                if(mouse && startY != Math.abs(distanceY) && event.buttons == 1){
+                    if(distanceY < 0){
+                        main.offset({top:pos.top + distanceY-speedplus});
+                        scrollingUp(distanceY);  // 處理頁面往上捲動時，點點烏賊的出現
                     }
-                    else if(disranceY > 0){
-                        if(main.position().top + disranceY < 0){
-                            main.offset({top:pos.top + disranceY+speedplus});
+                    else if(distanceY > 0){
+                        if(main.position().top + distanceY < 0){
+                            main.offset({ top: pos.top + distanceY + speedplus });
+                            scrollingDown(distanceY);  // 處理頁面往下捲動時，點點烏賊的消失
                         }
                     }
                     startY = endY;
+                    curDistance = distanceY;  // ----------- 自動捲動，紀錄這次的移動距離為
                 }
-                break;
-
-           
+            break;
         }
     });
 
@@ -167,16 +153,23 @@ function mouseRead(){
         choose = null;
         mouse = false;
         startX = startY = endX = endY = 0;
-        switch(choose){
-            //主軸故事
-            case 'story':
-                choose = null;
-                mouse = false;
-                startX = startY = endX = endY = 0;
-                break;
-
-            
+        // ----------- 自動捲動
+        // 當手指離開時，將目前的移動距離，當成最後一次的移動距離
+        // 根據正負方向與移動距離，計算自動撥放的時間長度
+        // 負數往下，正數往上
+        // 透過在指定的時間內呼叫 autoscrolling 函式，來實現自動滑動
+        // 以 cos(時間) 值作為自動滑動的移動距離 
+        //  
+        var distance = Math.abs(curDistance);
+        if (distance >= MovingThreshold) { // 移動超過 MovingThreshold 才自動捲動
+            if (curDistance < 0) ScrollingDir = -1;
+            else ScrollingDir = 1;
+            bAutoScrolling = true;
+            ScrollingTime = MaxScrollingTime * distance;
+            if (ScrollingTime >= 3000) ScrollingTime = 3000;
+            ScrollingID = setInterval(autuScrolling, 16.66667, 16.66667);
         }
+        // ----------- 自動捲動
     },false);
 
     story.addEventListener('mousedown',function(event){
@@ -194,6 +187,13 @@ function mouseRead(){
 function touchRead(){
     window.addEventListener('touchmove',function(event){
         event.preventDefault(); //防止預設觸控事件
+        //----------- 自動捲動
+        if (bAutoScrolling == true) { // 當手碰到螢幕時，如果再自動捲動狀態則結束自動捲動
+            clearInterval(ScrollingID);
+            ElapsedTime = 0;
+            bAutoScrolling = false;
+        }
+        //----------- 自動捲動
     }, {passive: false});
 
     window.addEventListener('touchmove',function(event){
@@ -205,46 +205,25 @@ function touchRead(){
                 // endX = touch.screenX;
                 endY = touch.screenY;
                 // var distanceX = (endX - startX);
-                var disranceY = (endY - startY);
-                if(startY != Math.abs(disranceY)){
-                    if(disranceY < 0){
-                        if(disranceY < -20){
-                            main.offset({top:pos.top + disranceY-20});
-                        }
-                        main.offset({top:pos.top + disranceY-speedplus});
-                        if(main.position().top + disranceY < (-main.height() + $(window).height()) - $(window).height()/5){
-                            console.log(dt);
-                            dt++;
-                            if(dt == 1){
-                                dot1.style.display = 'block';
-                            }
-                            if(dt == 3){
-                                dot2.style.display = 'block';
-                            }
-                            if(dt == 5){
-                                dot3.style.display = 'block';
-                            }
-                            if(dt == 7){
-                                dot4.style.display = 'block';
-                            }
-                            if(dt == 9){
-                                dot5.style.display = 'block';
-                            }
-                            if(dt == 10){
-                                nextStory();
-                            }
-                        }
+                var distanceY = (endY - startY);
+                if(startY != Math.abs(distanceY)){
+                    if(distanceY < 0){
+                        //if(distanceY < -20){
+                        //    main.offset({top:pos.top + distanceY-20});
+                        //}
+                        main.offset({top:pos.top + distanceY-speedplus});
+                        scrollingUp(distanceY);  // 處理頁面往上捲動時，點點烏賊的出現
                     }
-                    else if(disranceY > 0){
-                        if(main.position().top + disranceY < 0){
-                            main.offset({top:pos.top + disranceY+speedplus});
+                    else if(distanceY > 0){
+                        if(main.position().top + distanceY < 0){
+                            main.offset({ top: pos.top + distanceY + speedplus })
+                            scrollingDown(distanceY);  // 處理頁面往下捲動時，點點烏賊的消失;
                         }
                     }
                     startY = endY;
+                    curDistance = distanceY;  // ----------- 自動捲動，紀錄這次的移動距離為
                 }
-                break;
-
-            
+            break;
         }
     });
 
@@ -254,9 +233,24 @@ function touchRead(){
             case 'story':
                 choose = null;
                 startX = startY = endX = endY = 0;
+                // ----------- 自動捲動
+                // 當手指離開時，將目前的移動距離，當成最後一次的移動距離
+                // 根據正負方向與移動距離，計算自動撥放的時間長度
+                // 負數往下，正數往上
+                // 透過在指定的時間內呼叫 autoscrolling 函式，來實現自動滑動
+                // 以 cos(時間) 值作為自動滑動的移動距離 
+                //  
+                var distance = Math.abs(curDistance);
+                if (distance >= MovingThreshold) { // 移動超過三個 pixel 才自動捲動
+                    if (curDistance < 0) ScrollingDir = -1;
+                    else ScrollingDir = 1;
+                    bAutoScrolling = true;
+                    ScrollingTime = MaxScrollingTime * distance; // 3 (sec) * 1000 *  distance / 100;
+                    if (ScrollingTime >= 3000) ScrollingTime = 3000; // 最多就是3秒鐘，千分之一秒為單位
+                    ScrollingID = setInterval(autuScrolling, 16.66667, 16.66667);
+                }
+                // ----------- 自動捲動
                 break;
-
-            
         }
     },false);
 
@@ -266,7 +260,138 @@ function touchRead(){
         startX = touch.screenX;
         startY = touch.screenY;
         choose = 'story';
-    }, false);
+    }, false); 
+}
 
-    
+
+function scrollingUp(distY) { // 處理頁面往上滑動，手指或滑鼠左鍵按住由下往上滑動螢幕
+    displayDotStep = $(window).height() / (2 * 6); // 將視窗高度分成12等份，每往上一等份出現一隻章魚
+    displayDotStart = (-main.height() + $(window).height()); //- $(window).height() /2;
+    curBottomPos = main.position().top + distY;
+
+    if (curBottomPos < displayDotStart) {
+        //console.log(curBottomPos);
+        // 根據 main.position().top + distanceY 所在的位置，設定不同 dot 的顯示狀態
+        bShowDot = true; // 顯示 dot
+        var t = Math.ceil((displayDotStart - curBottomPos) / displayDotStep);
+        if (numDotOn != t) // 只要目前顯示的跟所在位置應顯示的 dot 數目不同就更新
+        {
+            if (t != 6) {
+                displayDots(t); numDotOn = t;
+            }
+            else {  // 轉換到下一章
+                nextStory();
+            }
+        }
+    }
+    // --------------------------------------
+}
+
+function scrollingDown(distY) { // 處理頁面往下滑動，手指或滑鼠左鍵按住由上往下滑動螢幕
+    displayDotStep = $(window).height() / (2 * 6); // 將視窗高度分成12等份，每往上一等份出現一隻章魚
+    displayDotStart = (-main.height() + $(window).height()); //- $(window).height() /2;
+    curBottomPos = main.position().top + distY;
+
+    if (curBottomPos < displayDotStart) {
+        // 根據 main.position().top + distanceY 所在的位置，設定不同 dot 的顯示狀態
+        // 進入 dot 顯示狀態
+        bShowDot = true;
+        var t = Math.floor((displayDotStart - curBottomPos) / displayDotStep);
+        if (numDotOn > 0) // 代表目前 Dot 顯示不足，操作者往下捲動
+        {
+            if (t != numDotOn) {
+                if (t != 0) {
+                    displayDots(t); numDotOn = t;
+                }
+                else {
+                    numDotOn = 0;
+                    dot1.style.display = 'none';
+                    dot2.style.display = 'none';
+                    dot3.style.display = 'none';
+                    dot4.style.display = 'none';
+                    dot5.style.display = 'none';
+                    bShowDot = false;
+                }
+            }
+        }
+    }
+    else {
+        if (bShowDot == true) {  // 檢查是否在 bShowDot 狀態
+            dot1.style.display = 'none';
+            dot2.style.display = 'none';
+            dot3.style.display = 'none';
+            dot4.style.display = 'none';
+            dot5.style.display = 'none';
+            bShowDot = false;
+        }
+    }
+}
+
+
+function displayDots(ndot) {
+    switch (ndot) {
+        case 1:
+            dot1.style.display = 'block';
+            dot2.style.display = 'none';
+            dot3.style.display = 'none';
+            dot4.style.display = 'none';
+            dot5.style.display = 'none';
+            break;
+        case 2:
+            dot1.style.display = 'block';
+            dot2.style.display = 'block';
+            dot3.style.display = 'none';
+            dot4.style.display = 'none';
+            dot5.style.display = 'none';
+            break;
+        case 3:
+            dot1.style.display = 'block';
+            dot2.style.display = 'block';
+            dot3.style.display = 'block';
+            dot4.style.display = 'none';
+            dot5.style.display = 'none';
+            break;
+        case 4:
+            dot1.style.display = 'block';
+            dot2.style.display = 'block';
+            dot3.style.display = 'block';
+            dot4.style.display = 'block';
+            dot5.style.display = 'none';
+            break;
+        case 5:
+            dot1.style.display = 'block';
+            dot2.style.display = 'block';
+            dot3.style.display = 'block';
+            dot4.style.display = 'block';
+            dot5.style.display = 'block';
+            break;
+    }
+}
+
+// 自動捲動控制
+function autuScrolling(dTime) {
+    var pos = main.offset();
+    ElapsedTime = ElapsedTime + dTime;  // ElapsedTime 目前的總經過時間
+    if ( ElapsedTime >= ScrollingTime ) { // 自動捲動結束
+        clearInterval(ScrollingID);
+        ElapsedTime = 0;
+        bAutoScrolling = false;
+    }
+    else { // 自動捲動
+        var cosValue = Math.cos(halfPI * ElapsedTime / ScrollingTime);
+        var distY = ScrollingDir * cosValue * cosValue * cosValue * ScrollingDist; // 以 5 像素為單位
+        //console.log(distY);
+        if (ScrollingDir == -1) {
+            if (main.position().top + distY > (-main.height() + $(window).height())) {
+                main.offset({ top: pos.top + distY });
+                scrollingUp(distY);  // 處理章魚的顯示
+            }
+        }
+        else {
+            if (main.position().top + distY < 0) {
+                main.offset({ top: pos.top + distY });
+                scrollingDown(distY); // 處理章魚的顯示
+            }
+        }
+    }
 }

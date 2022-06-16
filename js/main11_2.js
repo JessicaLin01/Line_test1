@@ -32,7 +32,7 @@ var curDistance = 0; // 只要記錄 Y 軸移動的前一個位置
 var ScrollingDir = -1; // 正往上，負往下
 var halfPI = 1.5707963; // PI/2
 var ScrollingDist = 30;  // 自動移動的單位時間的移動單位 30 Pixels
-var MaxScrollingTime = 30;  // 自動捲動的最大秒數：單位是 3秒 * 1000(毫秒)/ 100(移動距離 100 pixels 為 1)
+var MaxScrollingTime = 30;  // 自動捲動的最大秒數：單位是 3 秒 * 1000(毫秒)/100(移動距離 100 pixels 為 1)
 var MovingThreshold = 5;  // 最後一次滑動最大啟動自動捲動的像素值
 //---------------------------
 // 修正最後出現點點點的 BUG
@@ -158,7 +158,7 @@ function mouseRead(){
                     startY = endY;
                     curDistance = distanceY;  // ----------- 自動捲動，紀錄這次的移動距離為
                 }
-                break;
+            break;
 
             
         }
@@ -181,6 +181,7 @@ function mouseRead(){
             else ScrollingDir = 1;
             bAutoScrolling = true;
             ScrollingTime = MaxScrollingTime * distance;
+            if (ScrollingTime >= 3000) ScrollingTime = 3000;
             ScrollingID = setInterval(autuScrolling, 16.66667, 16.66667);
         }
         // ----------- 自動捲動
@@ -237,9 +238,7 @@ function touchRead(){
                     startY = endY;
                     curDistance = distanceY;  // ----------- 自動捲動，紀錄這次的移動距離為
                 }
-                break;
-
-            
+            break;
         }
     });
 
@@ -261,7 +260,8 @@ function touchRead(){
                     if (curDistance < 0) ScrollingDir = -1;
                     else ScrollingDir = 1;
                     bAutoScrolling = true;
-                    ScrollingTime = MaxScrollingTime * distance; // 1.5 (sec) * 1000 *  distance / 100;
+                    ScrollingTime = MaxScrollingTime * distance; // 3 (sec) * 1000 *  distance / 100;
+                    if (ScrollingTime >= 3000) ScrollingTime = 3000; // 最多就是3秒鐘，千分之一秒為單位
                     ScrollingID = setInterval(autuScrolling, 16.66667, 16.66667);
                 }
                 // ----------- 自動捲動
@@ -387,7 +387,7 @@ function displayDots(ndot) {
 function autuScrolling(dTime) {
     var pos = main.offset();
     ElapsedTime = ElapsedTime + dTime;  // ElapsedTime 目前的總經過時間
-    if (ElapsedTime >= ScrollingTime) { // 自動捲動結束
+    if ( ElapsedTime >= ScrollingTime ) { // 自動捲動結束
         clearInterval(ScrollingID);
         ElapsedTime = 0;
         bAutoScrolling = false;

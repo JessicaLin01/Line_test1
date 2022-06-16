@@ -99,37 +99,37 @@ function nextStory(){
 }
 
 
-function gameOver(){
-    choose = null;
-    mouse = false;
-    startX = startY = endX = endY = 0;
-    comic.css("display","none");
-    error.css("display","block");
-    unif.css("display","none");
-    dot1.style.display = 'none';
-    dot2.style.display = 'none';
-    dot3.style.display = 'none';
-    dot4.style.display = 'none';
-    dot5.style.display = 'none';
-    main.css("top",0);
-    leftchoice.css("display","none");
-}
+//function gameOver(){
+//    choose = null;
+//    mouse = false;
+//    startX = startY = endX = endY = 0;
+//    comic.css("display","none");
+//    error.css("display","block");
+//    unif.css("display","none");
+//    dot1.style.display = 'none';
+//    dot2.style.display = 'none';
+//    dot3.style.display = 'none';
+//    dot4.style.display = 'none';
+//    dot5.style.display = 'none';
+//    main.css("top",0);
+//    leftchoice.css("display","none");
+//}
 
-function uniform(){
-    choose = null;
-    mouse = false;
-    startX = startY = endX = endY = 0;
-    comic.css("display","none");
-    error.css("display","none");
-    unif.css("display","block");
-    dot1.style.display = 'none';
-    dot2.style.display = 'none';
-    dot3.style.display = 'none';
-    dot4.style.display = 'none';
-    dot5.style.display = 'none';
-    main.css("top",0);
-    leftchoice.css("display","none");
-}
+//function uniform(){
+//    choose = null;
+//    mouse = false;
+//    startX = startY = endX = endY = 0;
+//    comic.css("display","none");
+//    error.css("display","none");
+//    unif.css("display","block");
+//    dot1.style.display = 'none';
+//    dot2.style.display = 'none';
+//    dot3.style.display = 'none';
+//    dot4.style.display = 'none';
+//    dot5.style.display = 'none';
+//    main.css("top",0);
+//    leftchoice.css("display","none");
+//}
 
 //電腦指令
 function mouseRead(){
@@ -223,6 +223,7 @@ function mouseRead(){
             else ScrollingDir = 1;
             bAutoScrolling = true;
             ScrollingTime = MaxScrollingTime * distance;
+            if (ScrollingTime >= 3000) ScrollingTime = 3000;
             ScrollingID = setInterval(autuScrolling, 16.66667, 16.66667);
         }
         // ----------- 自動捲動
@@ -325,7 +326,7 @@ function touchRead(){
     });
 
     window.addEventListener('touchend', function (event) {
-        console.log("td:choose", choose);
+        //console.log("td:choose", choose);
         switch(choose){
             //主軸故事
             case 'story':
@@ -343,7 +344,8 @@ function touchRead(){
                     if (curDistance < 0) ScrollingDir = -1;
                     else ScrollingDir = 1;
                     bAutoScrolling = true;
-                    ScrollingTime = MaxScrollingTime * distance; // 1.5 (sec) * 1000 *  distance / 100;
+                    ScrollingTime = MaxScrollingTime * distance; // 3 (sec) * 1000 *  distance / 100;
+                    if (ScrollingTime >= 3000) ScrollingTime = 3000; // 最大為3秒, 千分之一秒為一個單位
                     ScrollingID = setInterval(autuScrolling, 16.66667, 16.66667);
                 }
                 // ----------- 自動捲動

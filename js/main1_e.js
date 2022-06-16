@@ -2,8 +2,13 @@ var comic = $(".comics");
 var error = $(".over");
 var content = $(".content");
 var dot = $(".flex-dot");
-var dt = 0;
 var speedplus = 3;
+
+var one = document.getElementById('dot1');
+var two = document.getElementById('dot2');
+var three = document.getElementById('dot3');
+var four = document.getElementById('dot4');
+var five = document.getElementById('dot5');
 
 var choice = $(".choice");
 var isPhone = detectmob();
@@ -37,6 +42,7 @@ var displayDotStart = 0;
 var curBottomPos = 0;
 var numDotOn = 0;
 //---------------------------
+
 
 getWidth();
 mouseRead();
@@ -76,7 +82,7 @@ function detectmob() {
     }
 }
 
-function Getdot() {
+function Getdot(){
     dot1.style.display = 'none';
     dot2.style.display = 'none';
     dot3.style.display = 'none';
@@ -100,7 +106,7 @@ function Init(){
 }
 
 function nextStory(){
-    document.location.href = "ch01_3.html";
+    document.location.href ="index.html";
 }
 
 function gameOver(){
@@ -138,13 +144,13 @@ function mouseRead(){
                 endY = event.screenY;
                 // var distanceX = (endX - startX);
                 var distanceY = (endY - startY);
-                if (mouse && startY != Math.abs(distanceY) && event.buttons == 1) {
-                    if (distanceY < 0) {
-                        main.offset({ top: pos.top + distanceY - speedplus });
+                if(mouse && startY != Math.abs(distanceY) && event.buttons == 1){
+                    if(distanceY < 0){
+                        main.offset({top:pos.top + distanceY-speedplus});
                         scrollingUp(distanceY);  // 處理頁面往上捲動時，點點烏賊的出現
                     }
-                    else if (distanceY > 0) {
-                        if (main.position().top + distanceY < 0) {
+                    else if(distanceY > 0){
+                        if(main.position().top + distanceY < 0){
                             main.offset({ top: pos.top + distanceY + speedplus });
                             scrollingDown(distanceY);  // 處理頁面往下捲動時，點點烏賊的消失
                         }
@@ -153,6 +159,8 @@ function mouseRead(){
                     curDistance = distanceY;  // ----------- 自動捲動，紀錄這次的移動距離為
                 }
             break;
+
+            
         }
     });
 
@@ -185,7 +193,9 @@ function mouseRead(){
         startX = event.screenX;
         startY = event.screenY;
         choose = 'story';
-    }, false);   
+    }, false);
+
+    
 }
 
 //手機指令
@@ -211,16 +221,16 @@ function touchRead(){
                 endY = touch.screenY;
                 // var distanceX = (endX - startX);
                 var distanceY = (endY - startY);
-                if (startY != Math.abs(distanceY)) {
-                    if (distanceY < 0) {
+                if(startY != Math.abs(distanceY)){
+                    if(distanceY < 0){
                         //if(distanceY < -20){
                         //    main.offset({top:pos.top + distanceY-20});
                         //}
-                        main.offset({ top: pos.top + distanceY - speedplus });
+                        main.offset({top:pos.top + distanceY-speedplus});
                         scrollingUp(distanceY);  // 處理頁面往上捲動時，點點烏賊的出現
                     }
-                    else if (distanceY > 0) {
-                        if (main.position().top + distanceY < 0) {
+                    else if(distanceY > 0){
+                        if(main.position().top + distanceY < 0){
                             main.offset({ top: pos.top + distanceY + speedplus })
                             scrollingDown(distanceY);  // 處理頁面往下捲動時，點點烏賊的消失;
                         }
@@ -255,7 +265,7 @@ function touchRead(){
                     ScrollingID = setInterval(autuScrolling, 16.66667, 16.66667);
                 }
                 // ----------- 自動捲動
-            break;
+                break;
         }
     },false);
 
@@ -265,8 +275,9 @@ function touchRead(){
         startX = touch.screenX;
         startY = touch.screenY;
         choose = 'story';
-    }, false);
+    }, false); 
 }
+
 
 function scrollingUp(distY) { // 處理頁面往上滑動，手指或滑鼠左鍵按住由下往上滑動螢幕
     displayDotStep = $(window).height() / (2 * 6); // 將視窗高度分成12等份，每往上一等份出現一隻章魚
@@ -331,6 +342,7 @@ function scrollingDown(distY) { // 處理頁面往下滑動，手指或滑鼠左
     }
 }
 
+
 function displayDots(ndot) {
     switch (ndot) {
         case 1:
@@ -375,7 +387,7 @@ function displayDots(ndot) {
 function autuScrolling(dTime) {
     var pos = main.offset();
     ElapsedTime = ElapsedTime + dTime;  // ElapsedTime 目前的總經過時間
-    if (ElapsedTime >= ScrollingTime) { // 自動捲動結束
+    if ( ElapsedTime >= ScrollingTime ) { // 自動捲動結束
         clearInterval(ScrollingID);
         ElapsedTime = 0;
         bAutoScrolling = false;
